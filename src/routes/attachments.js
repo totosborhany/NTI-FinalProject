@@ -1,7 +1,12 @@
 import express from 'express';
-import { attachmentsController } from '../controllers/attachments.controller.js';
+import { protect } from '../middlewares/authenticate.js';
+import { getAttachmentsByTask, createAttachment, deleteAttachment } from '../controllers/attachments.controller.js';
 
 const router = express.Router();
-router.route();
+
+router.use(protect);
+
+router.route('/tasks/:taskId/attachments').get(getAttachmentsByTask).post(createAttachment);
+router.route('/attachments/:attachmentId').delete(deleteAttachment);
 
 export default router;

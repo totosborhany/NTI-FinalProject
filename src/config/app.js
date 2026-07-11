@@ -12,6 +12,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { errorHandler, notFound } from '../middlewares/index.js';
 import attachmentsRouter from '../routes/attachments.js';
+import commentsRouter from '../routes/comments.js';
 import projectsRouter from '../routes/projects.js';
 import tasksRouter from '../routes/tasks.js';
 import usersRouter from '../routes/users.js';
@@ -32,8 +33,9 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/projects', projectsRouter);
-app.use('/api/v1/tasks', tasksRouter);
-app.use('/api/v1/attachments', attachmentsRouter);
+app.use('/api/v1', tasksRouter);
+app.use('/api/v1', attachmentsRouter);
+app.use('/api/v1', commentsRouter);
 app.use('/api/v1/auth', authRouter);
 app.use((err, req, res, next) => {
  res.status(err.statusCode).json({

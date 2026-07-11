@@ -1,5 +1,27 @@
 import mongoose from "mongoose";
 
+const projectRoles = ["OWNER", "ADMIN", "MEMBER"];
+
+const memberSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Member user is required"],
+    },
+    role: {
+      type: String,
+      enum: projectRoles,
+      default: "MEMBER",
+    },
+    joinedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { _id: false }
+);
+
 const projectSchema = new mongoose.Schema(
   {
     name: {
@@ -19,7 +41,7 @@ const projectSchema = new mongoose.Schema(
       required: [true, "Project owner is required"],
     },
     members: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      type: [memberSchema],
       default: [],
     },
     status: {
@@ -41,8 +63,28 @@ const projectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+projectSchema.pre("save", function (next) {
+  if (!this.owner) {
+    return next();
+  }
+
+  const existingOwnerMember = this.members?.find(
+    (member) => member.user?.toString() === this.owner.toString()
+  );
+
+  if (!existingOwnerMember) {
+    this.members = this.members || [];
+    this.members.push({ user: this.owner, role: "OWNER" });
+  } else if (existingOwnerMember.role !== "OWNER") {
+    existingOwnerMember.role = "OWNER";
+  }
+
+  next();
+});
+
 projectSchema.index({ owner: 1 });
 projectSchema.index({ status: 1 });
 projectSchema.index({ visibility: 1 });
+projectSchema.index({ "members.user": 1 });
 
 export const Project = mongoose.model("Project", projectSchema);

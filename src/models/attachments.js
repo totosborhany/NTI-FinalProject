@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const attachmentSchema = new mongoose.Schema(
   {
-    uploader: {
+    uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "Uploader is required"],
@@ -16,6 +16,11 @@ const attachmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Task",
       default: null,
+    },
+    fileName: {
+      type: String,
+      required: [true, "File name is required"],
+      trim: true,
     },
     originalName: {
       type: String,
@@ -49,6 +54,6 @@ const attachmentSchema = new mongoose.Schema(
 
 attachmentSchema.index({ project: 1 });
 attachmentSchema.index({ task: 1 });
-attachmentSchema.index({ uploader: 1 });
+attachmentSchema.index({ uploadedBy: 1 });
 
 export const Attachment = mongoose.model("Attachment", attachmentSchema);

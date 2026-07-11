@@ -7,10 +7,12 @@ import {
   getUserById as getUserByIdService,
   updateUserById as updateUserByIdService,
   deleteUserById as deleteUserByIdService,
+  updateUserPassword
 } from '../services/users.service.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/AppError.js';
+import { id } from 'zod/locales';
 
 export const getMe = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
@@ -37,8 +39,12 @@ export const updateMe = catchAsync(async (req, res, next) => {
   if (!data) {
     return next(new AppError(404, 'you must provide data to update'));
   }
+  if (data.password) {
+    return next(new AppError(400, 'Password cannot be updated here'));
+  }
 
   const updatedUser = await updateUser(userId, data);
+
   if (!updatedUser) {
     return next(new AppError(404, 'sorry a problem occured'));
   }
@@ -86,3 +92,13 @@ export const deleteUserById = catchAsync(async (req, res, next) => {
 
   res.status(200).json(ApiResponse.success('User deleted successfully', user));
 });
+export const updatePassword = catchAsync(async (req,res,next)=>{
+  const {oldPassword,newPassword,confirmNewPassword} = req.body;
+  const userId = req.user.id; 
+  const changed = await  updateUserPassword(userId,oldPassword,newPassword,confirmNewPassword);
+  if(!changed){
+    return next(new AppError(400, 'sorry problem changing password'));
+  }
+return res.status(201).json(ApiResponse.success('password updated successfully'));
+});
+//TODO forget password 

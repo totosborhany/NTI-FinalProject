@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { boolean, minLength } from "zod";
-import Bcrypt from "bcrypt"
-import { validate } from "../middlewares";
+import Bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -41,7 +40,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    active:{
+    isActive:{
       type:boolean,
       default:true
     },
@@ -54,8 +53,10 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     createdAt:{
+      type:Date,
       default : new Date()
     }
+    
   },
   { timestamps: true }
 );

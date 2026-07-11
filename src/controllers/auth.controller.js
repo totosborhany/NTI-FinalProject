@@ -2,7 +2,7 @@ import { authService } from '../services/auth.service.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import {User} from "../models/users.js";
-import Bcrypt from 'bcryptjs';
+import Bcrypt from 'bcrypt';
 import { AppError } from '../utils/AppError.js';
 import jwt from 'jsonwebtoken';
 
@@ -40,29 +40,43 @@ const createCookie = (res, userId, type) => {
 export const register = catchAsync(async (req, res, next) => {
     const { username, email, password, confirmPassword } = req.body;
     
+    // 1. Validate input fields immediately
     if (!username || !email || !password || !confirmPassword) {
         return next(new AppError(400, "All fields are required"));
     }
     
-    if (await User.findOne({ email: email })) {
-        return next(new AppError(400, "Email already exists"));
-    }
-    
- if (password !== confirmPassword) {
+    // 2. Check passwords BEFORE modifying the database
+    if (password !== confirmPassword) {
         return next(new AppError(400, "Passwords do not match"));
     }
+    
+    // 3. Check for existing email accounts
+    const existing = await User.findOne({ email: email });
+    if (existing) {
+        // FIX: Explicitly check for false. If it's true or undefined, block registration.
+        if (existing.isActive !== false) {
+            return next(new AppError(400, "Email already exists"));
+        }
+
+        // Only delete the dead account once input data is 100% valid
+        await User.findByIdAndDelete(existing.id);
+    }
+    
+    // 4. Create the new user (triggers pre-save hashing automatically)
     const newUser = await User.create({
         username,
         email,
         password
     });
     
+    // 5. Generate metadata and tokens
     const absoluteUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}/${newUser._id}`;
 
-    createCookie(res, newUser._id, "accessToken");
-    createCookie(res, newUser._id, "refreshToken");
+    // Added 'await' in case these helpers sign tokens or touch the DB asynchronously
+    await createCookie(res, newUser._id, "accessToken");
+    await createCookie(res, newUser._id, "refreshToken");
 
-    res.status(201)
+    return res.status(201)
        .location(absoluteUrl)
        .json(ApiResponse.success("User registered successfully"));
 });

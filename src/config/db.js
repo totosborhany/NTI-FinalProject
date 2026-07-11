@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { logger } from '../utils/logger.js';
-//TODO conncet with the main ISP to connect to the database 
+//FIXED
 export const connectDatabase = async () => {
   if (mongoose.connection.readyState === 1) {
     logger.info('MongoDB connection already established');
