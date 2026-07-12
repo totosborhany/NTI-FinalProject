@@ -2,23 +2,47 @@ import { Invitation } from '../models/invitations.js';
 import { User } from '../models/users.js';
 import { AppError } from '../utils/AppError.js';
 import { Project } from '../models/projects.js';
+import { notificationsService } from './notifications.service.js';
+
 export const sendInvitation = async (userId, recieverEmail, projectId) => {
   const reciever = await User.findOne({ email: recieverEmail });
   if (!reciever) {
     throw new AppError(404, 'sorry reciever email doesnt exist');
   }
-  //TODO bug to fix here check if hes a member first
-const isAlreadyMember = project.members.some(
-      (member) => member.user.toString() === userId.toString()
-    );
-     if (isAlreadyMember) {
- throw new AppError(400, 'cant invite a Member');
-     }
-  return await Invitation.create({
+
+  const project = await Project.findById(projectId);
+  if (!project) {
+    throw new AppError(404, 'project not found');
+  }
+
+  const isAlreadyMember = project.members.some(
+    (member) => member.user.toString() === reciever._id.toString()
+  );
+
+  if (isAlreadyMember) {
+    throw new AppError(400, 'cant invite a Member');
+  }
+
+  const invitation = await Invitation.create({
     project: projectId,
     receiver: reciever._id,
     sender: userId,
   });
+
+  await notificationsService.createNotification({
+    receiver: reciever._id,
+    sender: userId,
+    type: 'invitation',
+    title: 'Project invitation',
+    message: `You have been invited to join the project "${project.name}".`,
+    metadata: {
+      projectId: project._id,
+      projectName: project.name,
+      invitationId: invitation._id,
+    },
+  });
+
+  return invitation;
 };
 
 export const editInvitationService = async (projectId, invitationId, data) => {

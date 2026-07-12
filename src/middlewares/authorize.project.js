@@ -1,5 +1,4 @@
 import { AppError } from '../utils/AppError.js';
-import { catchAsync } from '../utils/catchAsync.js';
 import { Project } from "../models/projects.js";
 
 export const authorizeProjectTo = (...roles) => {

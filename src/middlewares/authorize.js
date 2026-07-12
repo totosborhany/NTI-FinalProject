@@ -1,5 +1,4 @@
 import { AppError } from '../utils/AppError.js';
-import { catchAsync } from '../utils/catchAsync.js';
 
 export  const authorizedTo = (...roles)=>{
   return (req, res, next) => {
