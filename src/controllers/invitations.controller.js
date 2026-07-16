@@ -15,7 +15,7 @@ export const createInvitation = catchAsync(async (req, res, next) => {
     return next(new AppError(400, 'sorry could send invitation'));
   }
 
-  return res.status(200).json(ApiResponse.success('inviation made and sent', invitation));
+   res.status(200).json(ApiResponse.success('inviation made and sent', invitation));
 });
 
 export const editInvitation = catchAsync(async (req, res, next) => {
@@ -26,7 +26,7 @@ export const editInvitation = catchAsync(async (req, res, next) => {
     return next(new AppError(400, 'sorry could not update invitation'));
   }
 
-  return res.status(200).json(ApiResponse.success('invitation updated successfully', invitation));
+   res.status(200).json(ApiResponse.success('invitation updated successfully', invitation));
 });
 
 export const deleteInvitation = catchAsync(async (req, res, next) => {
@@ -37,17 +37,17 @@ export const deleteInvitation = catchAsync(async (req, res, next) => {
     return next(new AppError(400, 'sorry could not delete invitation'));
   }
 
-  return res.status(204).json(ApiResponse.success('invitation deleted successfully'));
+   res.status(204).json(ApiResponse.success('invitation deleted successfully'));
 });
 
 export const myInvitations = catchAsync(async (req, res,next) => {
   const userId = req.user.id;
-  const [received, sent] = await getMyInvitations(userId);
+  const invitations = await getMyInvitations(userId,req.query);
 
   return res.status(200).json(
     ApiResponse.success('Invitations retrieved successfully', {
-      received,
-      sent,
+      invitations
+     
     })
   );
 });
@@ -56,5 +56,5 @@ export const reactToinvitation = catchAsync(async (req,res,next)=>{
   const {status}= req.body;
   const invitationId = req.params.invitationId;
   const reaction = await reactToinvitationService(req.user.id,invitationId,status)
-
+  res.status(200).json(ApiResponse.success("yiu have succesfully reacted to the invitaation",reaction));
 });

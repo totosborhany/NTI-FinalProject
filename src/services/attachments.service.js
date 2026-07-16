@@ -1,7 +1,8 @@
 import { Attachment } from '../models/attachments.js';
 import { Task } from '../models/tasks.js';
 import { AppError } from '../utils/AppError.js';
-
+import {uploadToCloudinary} from "../utils/uploadToCloudinary.js";
+import {imagekit} from "../config/cloudinary.js";
 const populateAttachment = async (attachment) => {
   await attachment.populate('uploadedBy');
   return attachment;
@@ -25,10 +26,11 @@ export const createAttachmentService = async (taskId, file, userId) => {
   if (!task) {
     throw new AppError(404, 'task not found');
   }
+  
+  const uploaded = await uploadToCloudinary(file);
 
   const fileName = file.filename || file.originalname;
-  const url = file.path || file.location || '';
-  const publicId = file.publicId || file.key || fileName;
+  const url = uploaded.secure_url;
 
   if (!url) {
     throw new AppError(400, 'file url is required');
@@ -40,21 +42,38 @@ export const createAttachmentService = async (taskId, file, userId) => {
     task: taskId,
     fileName,
     originalName: file.originalname || fileName,
-    mimeType: file.mimetype,
-    size: file.size,
-    url,
-    publicId,
+    
+    // ⚡️ ALWAYS use Multer's MIME type first to satisfy your Schema validation
+    mimeType: file.mimetype || uploaded.resource_type, 
+    
+    size: uploaded.bytes,
+    url: uploaded.secure_url,
+    publicId: uploaded.public_id,
   });
 
   await attachment.save();
   return await populateAttachment(attachment);
 };
-
 export const deleteAttachmentService = async (attachmentId) => {
-  const attachment = await Attachment.findByIdAndDelete(attachmentId);
+  const attachment = await Attachment.findById(attachmentId);
+
   if (!attachment) {
     throw new AppError(404, 'attachment not found');
   }
+
+  // ⚡️ Correct ImageKit delete syntax:
+  await imagekit.deleteFile(attachment.publicId);
+
+  await Task.findByIdAndUpdate(
+    attachment.task,
+    {
+      $pull: {
+        attachments: attachment._id,
+      },
+    }
+  );
+
+  await attachment.deleteOne();
 
   return attachment;
 };

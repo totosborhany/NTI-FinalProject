@@ -5,11 +5,12 @@ import { Comment } from '../models/comments.js';
 import { Attachment } from '../models/attachments.js';
 import { AppError } from '../utils/AppError.js';
 import { notificationsService } from './notifications.service.js';
-
+import {Pagination} from "../utils/pagination.js";
 const populateTask = async (task) => {
   await task.populate([{ path: 'creator' }, { path: 'assignee' }]);
   return task;
 };
+
 
 const normalizeLabels = (labels) => {
   if (!Array.isArray(labels)) {
@@ -21,13 +22,47 @@ const normalizeLabels = (labels) => {
     .filter((label) => label.length > 0);
 };
 
-export const getTasksByProjectService = async (projectId) => {
+export const getMyTaskService = async (query,userId)=>{
+
+const page = new Pagination(
+  Task.find({
+    $or: [
+      { creator: userId },       // Condition 1: You created/own the task
+      { assignee: userId }    // Condition 2: You are assigned to the task
+    ]
+  }),
+  query
+)
+  .filter()
+  .sort()
+  .limitFields()
+  .paginate();
+
+// 3. Execute the query
+const tasks = await page.query.lean();
+
+return tasks;
+}
+export const getTasksByProjectService = async (query,projectId) => {
   const project = await Project.findById(projectId);
+
+
   if (!project) {
     throw new AppError(404, 'project not found');
   }
 
-  const tasks = await Task.find({ project: projectId }).populate([{ path: 'creator' }, { path: 'assignee' }]);
+  
+ const page = new Pagination(
+ Task.find({ project: projectId }).populate([{ path: 'creator' }, { path: 'assignee' }]),
+  query
+)
+  .filter()
+  .sort()
+  .limitFields()
+  .paginate();
+
+const tasks = await page.query.lean();
+ 
   return tasks;
 };
 
@@ -121,7 +156,7 @@ export const updateTaskService = async (taskId, data) => {
     let assignee = null;
 
     if (data.assignee !== null) {
-      assignee = await User.findById(data.assignee);
+      assignee = await User.findOne({email:data.assignee});
       if (!assignee) {
         throw new AppError(404, 'assignee not found');
       }
@@ -134,7 +169,7 @@ export const updateTaskService = async (taskId, data) => {
         throw new AppError(404, 'sorry he isn\'t a member invite him first');
       }
     }
-
+    console.log(task.assignee);
     task.assignee = assignee ? assignee._id : null;
   }
 

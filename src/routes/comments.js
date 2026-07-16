@@ -4,9 +4,6 @@ import { getCommentsByTask, createComment, updateComment, deleteComment } from '
 
 const router = express.Router();
 
-router.use(protect);
-
-router.route('/tasks/:taskId/comments').get(getCommentsByTask).post(createComment);
-router.route('/comments/:commentId').patch(updateComment).delete(deleteComment);
+router.route('/:commentId').patch(protect, updateComment).delete(protect, deleteComment);
 
 export default router;

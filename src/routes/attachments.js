@@ -1,12 +1,9 @@
 import express from 'express';
 import { protect } from '../middlewares/authenticate.js';
-import { getAttachmentsByTask, createAttachment, deleteAttachment } from '../controllers/attachments.controller.js';
-
+import { deleteAttachment } from '../controllers/attachments.controller.js';
+import {authorizeTaskTo} from "../middlewares/authorize.task.js";
+import {upload} from '../middlewares/upload.js';
 const router = express.Router();
 
-router.use(protect);
-
-router.route('/tasks/:taskId/attachments').get(getAttachmentsByTask).post(createAttachment);
-router.route('/attachments/:attachmentId').delete(deleteAttachment);
 
 export default router;

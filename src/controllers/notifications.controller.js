@@ -4,7 +4,7 @@ import { catchAsync } from '../utils/catchAsync.js';
 
 export const notificationsController = {
   getNotifications: catchAsync(async (req, res) => {
-    const notifications = await notificationsService.getUserNotifications(req.user.id);
+    const notifications = await notificationsService.getUserNotifications(req.query,req.user.id);
     res.status(200).json(ApiResponse.success('Notifications retrieved successfully', notifications));
   }),
 

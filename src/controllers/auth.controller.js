@@ -5,34 +5,40 @@ import {User} from "../models/users.js";
 import Bcrypt from 'bcrypt';
 import { AppError } from '../utils/AppError.js';
 import jwt from 'jsonwebtoken';
-
+import crypto from "crypto";
+// import {Email} from "../utils/email";
 
 
 const signJwtAccessToken = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-
-        expiresIn: process.env.JWT_EXPIRES_IN,
+    const accessSecret = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET;
+    const accessExpiresIn = process.env.JWT_EXPIRES_IN || '1h';
+    return jwt.sign({ id: userId }, accessSecret, {
+        expiresIn: accessExpiresIn,
     });
 };
 
 const signJwtRefreshToken = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+    const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+    const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRATION || '7d';
+    return jwt.sign({ id: userId }, refreshSecret, {
+        expiresIn: refreshExpiresIn,
     });
 };
 
 const createCookie = (res, userId, type) => {
     if (type === "accessToken") {
+        const accessMaxAge = Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES || 15) * 60 * 1000;
         return res.cookie("accessToken", signJwtAccessToken(userId), {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES) * 60 * 1000,
+            maxAge: accessMaxAge,
         });
     } else if (type === "refreshToken") {
+        const refreshMaxAge = Number(process.env.JWT_REFRESH_EXPIRATION_DAYS || 7) * 24 * 60 * 60 * 1000;
         return res.cookie("refreshToken", signJwtRefreshToken(userId), {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: Number(process.env.JWT_REFRESH_EXPIRATION_DAYS) * 24 * 60 * 60 * 1000,
+            maxAge: refreshMaxAge,
         });
     }
 };
@@ -40,17 +46,14 @@ const createCookie = (res, userId, type) => {
 export const register = catchAsync(async (req, res, next) => {
     const { username, email, password, confirmPassword } = req.body;
     
-    // 1. Validate input fields immediately
     if (!username || !email || !password || !confirmPassword) {
         return next(new AppError(400, "All fields are required"));
     }
     
-    // 2. Check passwords BEFORE modifying the database
     if (password !== confirmPassword) {
         return next(new AppError(400, "Passwords do not match"));
     }
     
-    // 3. Check for existing email accounts
     const existing = await User.findOne({ email: email });
     if (existing) {
         // FIX: Explicitly check for false. If it's true or undefined, block registration.
@@ -58,21 +61,18 @@ export const register = catchAsync(async (req, res, next) => {
             return next(new AppError(400, "Email already exists"));
         }
 
-        // Only delete the dead account once input data is 100% valid
         await User.findByIdAndDelete(existing.id);
     }
+    const existingName = await User.findOne({ username: username });
+    if(existingName){
+        return next(new AppError(409, "sorry username already exists"));
+
+    }
     
-    // 4. Create the new user (triggers pre-save hashing automatically)
-    const newUser = await User.create({
-        username,
-        email,
-        password
-    });
+    const newUser = await User.create(req.body);
     
-    // 5. Generate metadata and tokens
     const absoluteUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}/${newUser._id}`;
 
-    // Added 'await' in case these helpers sign tokens or touch the DB asynchronously
     await createCookie(res, newUser._id, "accessToken");
     await createCookie(res, newUser._id, "refreshToken");
 
@@ -86,19 +86,18 @@ export const login =catchAsync(async (req,res,next)=>{
     if(!email || !password){
         return next(new AppError(400,"all fields are required"));
     }
-
-
-
-    const myUser = await User.findOne({email:email});
+ const myUser = await User.findOne({email:email});
     if(! myUser || !(await Bcrypt.compare(password,myUser.password))){
         return next(new AppError(401,"sorry invalid credentiels"));
     } 
-     createCookie(res,myUser._id,"accessToken");
+        createCookie(res,myUser._id,"accessToken");
         createCookie(res,myUser._id,"refreshToken");
 
         res.status(200).json(ApiResponse.success("User logged in successfully"));
 
 });
+
+
 export const logout = catchAsync(async (req, res, next) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
@@ -114,7 +113,8 @@ export const logout = catchAsync(async (req, res, next) => {
 
     res.status(200).json(ApiResponse.success("Logged out successfully"));
 });
-// TODO cache the refresh token in a caching db for fster performace 
+// TODO cache the refresh token in a caching db for faster performace in v2
+//TODO socket.io in v2
 export const refresh = catchAsync(async (req,res,next)=>{
 
 const refreshToken = req.cookies.refreshToken;
@@ -123,7 +123,8 @@ return next(new AppError(401,"please log in first"));
 }
     let decoded;
     try {
-        decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+        decoded = jwt.verify(refreshToken, refreshSecret);
     } catch (err) {
         return next(new AppError(401, "Your session has expired. Please log in again."));
     }
@@ -138,3 +139,5 @@ return next(new AppError(401,"please log in first"));
 
 
 });
+
+//TODO forget passweord in v2

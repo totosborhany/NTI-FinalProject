@@ -1,10 +1,17 @@
-import { getTasksByProjectService, createTaskService, getTaskByIdService, updateTaskService, deleteTaskService } from '../services/tasks.service.js';
+import { getMyTaskService,getTasksByProjectService, createTaskService, getTaskByIdService, updateTaskService, deleteTaskService } from '../services/tasks.service.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+export const getAllTasks  =catchAsync(async (req,res,next)=>{
+  const mytasks = await getMyTaskService(req.query,req.user.id);
+  if(!mytasks){
+    return next(new AppError(404, 'No tasks found for this project'));
+  }
+    return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', mytasks));
 
+});
 export const getTasksByProject = catchAsync(async (req, res, next) => {
-  const tasks = await getTasksByProjectService(req.params.projectId);
+  const tasks = await getTasksByProjectService(req.query,req.params.projectId);
   if (!tasks) {
     return next(new AppError(404, 'No tasks found for this project'));
   }

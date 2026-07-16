@@ -1,10 +1,10 @@
-import { getAllMyProjectsService, createProjectService, getProjectByIdService, updateProjectService, deleteProjectService, addMemberService, removeMemberService, changeMemberRoleService, archiveProjectService, restoreProjectService } from '../services/projects.service.js';
+import {getAllMembersService, getAllMyProjectsService, createProjectService, getProjectByIdService, updateProjectService, deleteProjectService, addMemberService, removeMemberService, changeMemberRoleService, archiveProjectService, restoreProjectService } from '../services/projects.service.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
 export const getAllMyProjects = catchAsync(async (req, res, next) => {
-  const myProjects = await getAllMyProjectsService(req.user.id);
+  const myProjects = await getAllMyProjectsService(req.query,req.user.id);
   if (!myProjects) {
     return next(new AppError(404, 'you dont have projects yet'));
   }
@@ -31,7 +31,7 @@ export const getProjectById = catchAsync(async (req, res) => {
 //FIXED
 export const updateProject = catchAsync(async (req, res) => {
   const project = await updateProjectService(req.params.projectId, req.body);
-  return res.status(200).json(ApiResponse.success('project updated successfully', project));
+  return res.status(201).json(ApiResponse.success('project updated successfully', null));
 });
 
 export const deleteProject = catchAsync(async (req, res) => {
@@ -62,4 +62,11 @@ export const archiveProject = catchAsync(async (req, res) => {
 export const restoreProject = catchAsync(async (req, res) => {
   const project = await restoreProjectService(req.params.projectId);
   return res.status(200).json(ApiResponse.success('project restored successfully', project));
+});
+export const getAllMembers = catchAsync(async (req,res,next)=>{
+  const members = await getAllMembersService(req.params.projectId);
+  if(!members){
+return next(new AppError(400,"Sorry no members"));
+  }
+  return res.status(200).json(ApiResponse.success('members returned successfully', members));
 });

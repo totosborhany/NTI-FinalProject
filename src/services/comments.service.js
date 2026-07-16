@@ -36,8 +36,12 @@ export const createCommentService = async (taskId, data, userId) => {
   return await populateComment(comment);
 };
 
-export const updateCommentService = async (commentId, data) => {
+export const updateCommentService = async (commentId, data,userId) => {
   const comment = await Comment.findById(commentId);
+  if(userId.toString()!==comment.author.toString()){
+    throw new AppError(403, 'not your comment');
+
+  }
   if (!comment) {
     throw new AppError(404, 'comment not found');
   }
@@ -54,8 +58,12 @@ export const updateCommentService = async (commentId, data) => {
   return await populateComment(comment);
 };
 
-export const deleteCommentService = async (commentId) => {
+export const deleteCommentService = async (commentId,userId) => {
   const comment = await Comment.findByIdAndDelete(commentId);
+  if(userId.toString()!==comment.author.toString()){
+    throw new AppError(403, 'not your comment');
+
+  }
   if (!comment) {
     throw new AppError(404, 'comment not found');
   }

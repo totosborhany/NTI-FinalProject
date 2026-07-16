@@ -1,27 +1,22 @@
 import express from 'express';
-import { getAllMyProjects, createProject, getProjectById, updateProject, deleteProject, addMember, removeMember, changeMemberRole, archiveProject, restoreProject } from '../controllers/projects.controller.js';
+import { getAllMembers,getAllMyProjects, createProject, getProjectById, updateProject, deleteProject, addMember, removeMember, changeMemberRole, archiveProject, restoreProject } from '../controllers/projects.controller.js';
 import { protect } from '../middlewares/authenticate.js';
 import{authorizeProjectTo} from "../middlewares/authorize.project.js";
 import { sendInvitation } from '../services/invitations.service.js';
+import { getTasksByProject, createTask} from '../controllers/tasks.controller.js';
+
+//TODO api performace in v2
 const router = express.Router();
-router.use(protect);
-router.route('/').get(getAllMyProjects).post(createProject);
-router.route('/:projectId').get(getProjectById).patch(updateProject).delete(authorizeProjectTo("OWNER"),deleteProject);
-router.delete('/:projectId/members/:userId', authorizeProjectTo("OWNER"),removeMember);
-router.patch('/:projectId/members/:userId/role',authorizeProjectTo("ADMIN","OWNER"), changeMemberRole);
-router.patch('/:projectId/archive', authorizeProjectTo("ADMIN","OWNER"),archiveProject);
-router.patch('/:projectId/restore', authorizeProjectTo("ADMIN","OWNER"),restoreProject);
-//authorizedProjectTo ["OWNER", "ADMIN", "MEMBER"];
+router.route('/').get(protect, getAllMyProjects).post(protect, createProject);
+router.route('/:projectId').get(protect, authorizeProjectTo("OWNER","ADMIN","MEMBER"),getProjectById).patch(protect, updateProject).delete(protect, authorizeProjectTo("OWNER"),deleteProject);
+router.delete('/:projectId/members/:userId', protect, authorizeProjectTo("OWNER"),removeMember);
+router.get('/:projectId/members/',protect,authorizeProjectTo("OWNER","ADMIN","MEMBER"),getAllMembers);
+router.patch('/:projectId/members/:userId/role', protect, authorizeProjectTo("ADMIN","OWNER"), changeMemberRole);
+router.patch('/:projectId/archive', protect, authorizeProjectTo("ADMIN","OWNER"),archiveProject);
+router.patch('/:projectId/restore', protect, authorizeProjectTo("ADMIN","OWNER"),restoreProject);
+router
+  .route('/:projectId/tasks')
+  .get(protect, authorizeProjectTo('OWNER', 'ADMIN', 'MEMBER'), getTasksByProject)
+  .post(protect, authorizeProjectTo('OWNER', 'ADMIN', 'MEMBER'), createTask);
+
 export default router;
-// | Action              | Owner | Admin | Member |
-// | ------------------- | :---: | :---: | :----: |
-// | View project        |   ✅   |   ✅   |    ✅   |//here✅
-// | Create tasks        |   ✅   |   ✅   |    ✅   |//not here
-// | Edit tasks          |   ✅   |   ✅   |    ✅   |//not here
-// | Comment             |   ✅   |   ✅   |    ✅   |//not here
-// | Upload files        |   ✅   |   ✅   |    ✅   |//not here
-// | Invite members      |   ✅   |   ✅   |    ❌   |//not here
-// | Remove members      |   ✅   |   ✅   |    ❌   |//here✅
-// | Change member roles |   ✅   |   ❌   |    ❌   |//here✅
-// | Delete project      |   ✅   |   ❌   |    ❌   |
-// | Transfer ownership  |   ✅   |   ❌   |    ❌   |

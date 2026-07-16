@@ -12,16 +12,14 @@ import {
 } from '../controllers/users.controller.js';
 import { protect } from '../middlewares/authenticate.js';
 import { authorizedTo } from '../middlewares/authorize.js';
-
+import {upload} from "../middlewares/upload.js";
 const router = express.Router();
 
-router.use(protect);
+router.route('/').get(protect, authorizedTo('admin') ,getAllUsers).post(protect, authorizedTo('admin'), createUser);
 
-router.route('/').get(authorizedTo('admin'), getAllUsers).post(authorizedTo('admin'), createUser);
-
-router.route('/me').get(getMe).patch(updateMe).delete(deleteMe).patch(updatePassword);
-router.route('/password').patch(updatePassword);
+router.route('/me').get(protect, getMe).patch(protect,  upload.single("avatar"),updateMe).delete(protect, deleteMe);
+router.route('/password').patch(protect, updatePassword);
 //.post(forgotPassword);
-router.route('/:id').get(authorizedTo('admin'), getUserById).patch(authorizedTo('admin'), updateUserById).delete(authorizedTo('admin'), deleteUserById);
+router.route('/:id').get(protect, authorizedTo('admin'), getUserById).patch(protect, authorizedTo('admin'), updateUserById).delete(protect, authorizedTo('admin'), deleteUserById);
 
 export default router;

@@ -3,7 +3,7 @@ import { User } from '../models/users.js';
 import { AppError } from '../utils/AppError.js';
 import { Project } from '../models/projects.js';
 import { notificationsService } from './notifications.service.js';
-
+import { Pagination } from '../utils/pagination.js';
 export const sendInvitation = async (userId, recieverEmail, projectId) => {
   const reciever = await User.findOne({ email: recieverEmail });
   if (!reciever) {
@@ -101,56 +101,85 @@ export const deleteInvitationService = async (projectId, invitationId) => {
   return invitation;
 };
 
-export const getMyInvitations = async (userId) => {
-  return await Promise.all([
-    Invitation.find({ receiver: userId }).populate('project', 'name'),
-    Invitation.find({ sender: userId }).populate('project', 'name'),
-  ]);
+export const getMyInvitations = async (userId, query) => {
+  const page = new Pagination(
+    Invitation.find({
+      $or: [
+        { receiver: userId },
+        { sender: userId }
+      ]
+    }).populate('project', 'name'),
+    query
+  )
+    .filter()
+    .sort() // Automatically sorts by newest first
+    .limitFields()
+    .paginate();
+
+  // 2. Execute and return as a single paginated array
+  return await page.query.lean();
 };
 
 export const reactToinvitationService = async (userId, invitationId, status) => {
-  // 1. Fetch the invitation and populate the full project document
-  const invitation = await Invitation.findById(invitationId).populate('project');
+  const invitation = await Invitation.findById(invitationId)
+    .populate('project')
+    .populate('receiver', 'email');
 
   if (!invitation) {
     throw new AppError(404, 'Invitation not found');
-  }
-
-  if (invitation.receiver.toString() !== userId.toString()) {
-    throw new AppError(403, 'You are not authorized to respond to this invitation');
   }
 
   if (!invitation.project) {
     throw new AppError(404, 'The project associated with this invitation no longer exists');
   }
 
+  if (invitation.receiver._id.toString() !== userId.toString()) {
+    throw new AppError(403, 'You are not authorized to respond to this invitation');
+  }
+
   if (invitation.status !== 'Pending') {
     throw new AppError(400, 'This invitation has already been handled');
   }
 
-  if (status === "Accepted") {
-    const project = invitation.project; 
+  const project = invitation.project;
+  const sender = invitation.sender;
+  const receiverEmail = invitation.receiver.email;
 
+  if (status === 'Accepted') {
     const isAlreadyMember = project.members.some(
       (member) => member.user.toString() === userId.toString()
     );
 
     if (!isAlreadyMember) {
-      project.members.push({ user: userId, role: 'MEMBER' });
-      
-      await project.save(); 
+      project.members.push({
+        user: userId,
+        role: 'MEMBER',
+      });
+
+      await project.save();
     }
 
     invitation.status = 'Accepted';
-
-  } else if (status === "Rejected") {
+  } else if (status === 'Rejected') {
     invitation.status = 'Rejected';
-    
   } else {
     throw new AppError(400, 'Invalid status action. Use Accepted or Rejected.');
   }
 
-  // 4. Save the invitation status update
   await invitation.save();
+
+  await notificationsService.createNotification({
+    receiver: sender,
+    sender: userId,
+    type: 'invitation reaction',
+    title: 'Project invitation',
+    message: `${receiverEmail} has ${invitation.status.toLowerCase()} your invitation to "${project.name}"`,
+    metadata: {
+      projectId: project._id,
+      projectName: project.name,
+      invitationId: invitation._id,
+    },
+  });
+
   return invitation;
 };

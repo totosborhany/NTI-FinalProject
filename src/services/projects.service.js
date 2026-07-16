@@ -1,22 +1,30 @@
 import { User } from '../models/users.js';
 import { Project } from '../models/projects.js';
 import { AppError } from '../utils/AppError.js';
-
+import { Pagination } from '../utils/pagination.js';
 const populateProject = async (project) => {
   return await project.populate([{ path: 'owner' }, { path: 'members.user' }]);
 };
 
-export const getAllMyProjectsService = async (userId) => {
-  const projects = await Project.find({
+export const getAllMyProjectsService = async (query,userId) => {
+   
+const page  = new Pagination(
+  Project.find({
     $or: [
       { owner: userId },
       { "members.user": userId }
     ]
   })
     .populate("owner")
-    .populate("members.user");
+    .populate("members.user")
 
-  return projects;
+  ,query).filter().limitFields().sort().paginate();
+
+const projects = await page.query.lean();
+if(!projects){
+throw new AppError(400,"sorry no projects");
+}  
+return projects;
 };
 export const createProjectService = async (data, userId) => {
   const project = new Project({
@@ -46,9 +54,13 @@ export const getProjectByIdService = async (projectId, userId) => {
   return await populateProject(project);
 };
 
-export const updateProjectService = async (project, data) => {
+export const updateProjectService = async (projectid, data) => {
   const allowedFields = ['name', 'description', 'color', 'visibility', 'status'];
+const project = await Project.findById(projectid);
+if(!project){
+    throw new AppError(403, 'project doesnt even eist');
 
+}
   allowedFields.forEach((field) => {
     if (data[field] !== undefined) {
       project[field] = data[field];
@@ -146,4 +158,17 @@ export const restoreProjectService = async (project) => {
   project.status = 'Active';
   await project.save();
   return await populateProject(project);
+};
+export const getAllMembersService = async (projectId) => {
+  // Chain the populate methods directly to the query
+  const project = await Project.findById(projectId)
+    .populate("owner")
+    .populate("members.user");
+
+  if (!project) {
+    throw new AppError(404, "couldnt find project");
+  }
+
+  // Now that the project is populated, you can safely return the members
+  return project.members;
 };

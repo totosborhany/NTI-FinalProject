@@ -5,11 +5,10 @@ import { authorizeProjectTo } from '../middlewares/authorize.project.js';
 
 const router = express.Router();
 
-router.use(protect);
-router.post('/:projectId', authorizeProjectTo('ADMIN', 'OWNER'), createInvitation);
-router.patch('/:projectId/:invitationId', authorizeProjectTo('ADMIN', 'OWNER'), editInvitation);
-router.delete('/:projectId/:invitationId', authorizeProjectTo('ADMIN', 'OWNER'), deleteInvitation);
-router.patch("/:invitationId",reactToinvitation);
-router.get('/', myInvitations);
+router.post('/:projectId', protect, authorizeProjectTo('ADMIN', 'OWNER'), createInvitation);
+router.patch('/:projectId/:invitationId', protect, authorizeProjectTo('ADMIN', 'OWNER'), editInvitation);
+router.delete('/:projectId/:invitationId', protect, authorizeProjectTo('ADMIN', 'OWNER'), deleteInvitation);
+router.patch('/:invitationId', protect, reactToinvitation);
+router.get('/', protect, myInvitations);
 
 export default router;

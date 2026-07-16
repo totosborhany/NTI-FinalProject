@@ -17,11 +17,11 @@ export const createComment = catchAsync(async (req, res, next) => {
 });
 
 export const updateComment = catchAsync(async (req, res, next) => {
-  const comment = await updateCommentService(req.params.commentId, req.body);
+  const comment = await updateCommentService(req.params.commentId, req.body,req.user.id);
   return res.status(200).json(ApiResponse.success('Comment updated successfully', comment));
 });
 
 export const deleteComment = catchAsync(async (req, res, next) => {
-  await deleteCommentService(req.params.commentId);
+  await deleteCommentService(req.params.commentId,req.user.id);
   return res.status(200).json(ApiResponse.success('Comment deleted successfully', null));
 });

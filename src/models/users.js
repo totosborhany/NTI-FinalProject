@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { boolean, minLength } from "zod";
 import Bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
@@ -11,9 +10,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       minlength: [5, "Username must be at least 5 characters"],
-      maxlength: [50, "Username cannot exceed 50 characters"],
-      match: [/^[a-z0-9_]+$/, "Username can only contain lowercase letters, numbers, and underscores"],
-    },
+      maxlength: [50, "Username cannot exceed 50 characters"],  
+      match: [/^[A-Za-z0-9_]+$/,"Username can only contain letters, numbers, and underscores",
+    ], 
+     },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     isActive:{
-      type:boolean,
+      type:Boolean,
       default:true
     },
     isOnline: {
@@ -55,14 +55,14 @@ const userSchema = new mongoose.Schema(
     createdAt:{
       type:Date,
       default : new Date()
-    }
+    } ,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
     
   },
   { timestamps: true }
 );
 
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
 userSchema.pre('save',async function(next) {
   if (!this.isModified('password')) return next();
   const salt = await Bcrypt.genSalt(10);
@@ -70,4 +70,28 @@ userSchema.pre('save',async function(next) {
   next();
 });
 
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
+    // 'this.password' refers to the hashed password of the current user document
+    return await Bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
+userSchema.methods.createResetToken = async function () {
+  const resetToken = await crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = await crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.passwordResetExpires  = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
+
+userSchema.method.createPasswordResetToken = async function (){
+
+};
 export const User = mongoose.model("User", userSchema);

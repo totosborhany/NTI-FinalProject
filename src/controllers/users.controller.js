@@ -13,7 +13,7 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { AppError } from '../utils/AppError.js';
 import { id } from 'zod/locales';
-
+import {User} from "../models/users.js";
 export const getMe = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
   const users = await userData(userId);
@@ -43,7 +43,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
     return next(new AppError(400, 'Password cannot be updated here'));
   }
 
-  const updatedUser = await updateUser(userId, data);
+  const updatedUser = await updateUser(userId, data,req.file);
 
   if (!updatedUser) {
     return next(new AppError(404, 'sorry a problem occured'));
@@ -52,8 +52,8 @@ export const updateMe = catchAsync(async (req, res, next) => {
   res.status(201).json(ApiResponse.success('User updated successfully', updatedUser));
 });
 
-export const getAllUsers = catchAsync(async (_req, res) => {
-  const users = await getAllUsersService();
+export const getAllUsers = catchAsync(async (req, res,next) => {
+  const users = await getAllUsersService(req.query);
   res.status(200).json(ApiResponse.success('Users fetched successfully', users));
 });
 
@@ -101,4 +101,3 @@ export const updatePassword = catchAsync(async (req,res,next)=>{
   }
 return res.status(201).json(ApiResponse.success('password updated successfully'));
 });
-//TODO forget password 
