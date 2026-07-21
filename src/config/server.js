@@ -1,7 +1,6 @@
 import http from 'http';
 import app from './app.js';
 import { connectDatabase, disconnectDatabase } from './db.js';
-import { initializeSocket } from './socket.js';
 import { logger } from '../utils/logger.js';
 
 const startServer = async () => {
@@ -9,7 +8,6 @@ const startServer = async () => {
     await connectDatabase();
 
     const server = http.createServer(app);
-    initializeSocket(server);
 
     server.listen(process.env.PORT, () => {
       logger.info(`Server is running on port ${process.env.PORT}`);

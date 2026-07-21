@@ -4,8 +4,9 @@ import { AppError } from '../utils/AppError.js';
 import { Project } from '../models/projects.js';
 import { notificationsService } from './notifications.service.js';
 import { Pagination } from '../utils/pagination.js';
+import { ActivityLog } from '../models/logs.js';
 export const sendInvitation = async (userId, recieverEmail, projectId) => {
-  const reciever = await User.findOne({ email: recieverEmail });
+  const reciever = await User.findOne({ email: recieverEmail, isActive: true });
   if (!reciever) {
     throw new AppError(404, 'sorry reciever email doesnt exist');
   }
@@ -29,7 +30,14 @@ export const sendInvitation = async (userId, recieverEmail, projectId) => {
     sender: userId,
   });
 
-  await notificationsService.createNotification({
+await Promise.all([ActivityLog.create({
+    project: project._id,
+    actor: userId,
+    type: "INVITATION_SENT",
+    entityType: "Project",
+    entityId: project._id,
+    message: ` ${reciever.username} was invited to join the project "${project.name}".`,
+  }), notificationsService.createNotification({
     receiver: reciever._id,
     sender: userId,
     type: 'invitation',
@@ -40,8 +48,7 @@ export const sendInvitation = async (userId, recieverEmail, projectId) => {
       projectName: project.name,
       invitationId: invitation._id,
     },
-  });
-
+  })]);
   return invitation;
 };
 
@@ -117,7 +124,22 @@ export const getMyInvitations = async (userId, query) => {
     .paginate();
 
   // 2. Execute and return as a single paginated array
-  return await page.query.lean();
+const invitations = await page.query.lean();
+
+
+  const meta = {
+    page: query.page || 1,
+    limit: query.limit || 10,
+    totalItems: invitations.length,
+    totalPages: Math.ceil(invitations.length / (query.limit || 10)),
+    hasNextPage: (query.page || 1) < Math.ceil(invitations.length / (query.limit || 10)),
+    hasPreviousPage: (query.page || 1) > 1,
+  };
+
+  const summary = {
+    invitations: invitations.length,
+  };
+  return { data: invitations, meta: meta, summary: summary };
 };
 
 export const reactToinvitationService = async (userId, invitationId, status) => {
@@ -144,8 +166,9 @@ export const reactToinvitationService = async (userId, invitationId, status) => 
   const project = invitation.project;
   const sender = invitation.sender;
   const receiverEmail = invitation.receiver.email;
-
+  let loggType ,  has;
   if (status === 'Accepted') {
+
     const isAlreadyMember = project.members.some(
       (member) => member.user.toString() === userId.toString()
     );
@@ -160,15 +183,21 @@ export const reactToinvitationService = async (userId, invitationId, status) => 
     }
 
     invitation.status = 'Accepted';
+    loggType = "INVITATION_ACCEPTED"
+    has  = "accepted";
+
   } else if (status === 'Rejected') {
+
     invitation.status = 'Rejected';
+    loggType = "INVITATION_REJECTED";
+    has  = "rejected";
   } else {
     throw new AppError(400, 'Invalid status action. Use Accepted or Rejected.');
   }
+  
 
-  await invitation.save();
-
-  await notificationsService.createNotification({
+  await Promise.all([invitation.save(),
+    notificationsService.createNotification({
     receiver: sender,
     sender: userId,
     type: 'invitation reaction',
@@ -179,7 +208,13 @@ export const reactToinvitationService = async (userId, invitationId, status) => 
       projectName: project.name,
       invitationId: invitation._id,
     },
-  });
-
+  }),ActivityLog.create({
+    project:project,
+    actor:receiverEmail,
+    type: loggType,
+    entityType:"Invitation",
+    entityId:invitation._id,
+    message:`${receiverEmail} has ${has} invitation`
+  })]);
   return invitation;
 };

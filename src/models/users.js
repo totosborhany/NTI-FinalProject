@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Bcrypt from "bcrypt";
-
+import crypto from "crypto";
 const userSchema = new mongoose.Schema(
   {
     
@@ -30,7 +30,12 @@ const userSchema = new mongoose.Schema(
         avatar: {
       type: String,
       default: "",
-    },
+    },avatarPublicId:
+    {
+       type: String,
+      default: "",
+    }
+    ,
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -80,18 +85,19 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 
-userSchema.methods.createResetToken = async function () {
-  const resetToken = await crypto.randomBytes(32).toString("hex");
-  this.passwordResetToken = await crypto
+
+userSchema.methods.createResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-  this.passwordResetExpires  = Date.now() + 10 * 60 * 1000;
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };
 
-userSchema.method.createPasswordResetToken = async function (){
 
-};
 export const User = mongoose.model("User", userSchema);

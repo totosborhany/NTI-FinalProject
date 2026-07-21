@@ -57,6 +57,12 @@ const taskSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
       default: null,
+      validate: {
+        validator: function (value) {
+          return !value || value >= new Date();
+        },
+        message: "Due date cannot be in the past",
+      },
     },
     labels: {
       type: [String],

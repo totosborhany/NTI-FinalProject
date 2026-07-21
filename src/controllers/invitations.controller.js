@@ -42,13 +42,12 @@ export const deleteInvitation = catchAsync(async (req, res, next) => {
 
 export const myInvitations = catchAsync(async (req, res,next) => {
   const userId = req.user.id;
-  const invitations = await getMyInvitations(userId,req.query);
-
-  return res.status(200).json(
-    ApiResponse.success('Invitations retrieved successfully', {
-      invitations
-     
-    })
+  const result = await getMyInvitations(userId,req.query);
+  if(result.data.length === 0){
+return res.status(200).json(ApiResponse.success('No invitations found',result.data,result.meta,result.summary));
+  }
+   res.status(200).json(
+    ApiResponse.success('Invitations retrieved successfully',result.data,result.meta,result.summary)
   );
 });
 export const reactToinvitation = catchAsync(async (req,res,next)=>{

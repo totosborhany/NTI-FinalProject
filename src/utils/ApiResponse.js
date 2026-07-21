@@ -1,10 +1,12 @@
 export class ApiResponse {
 
-  static success(message = 'Operation successful', data = null) {
+  static success(message = 'Operation successful', data = null,meta= null,summary=null) {
     return {
       success: true,
       message,
       data,
+      meta,
+      summary
     };
   }
   /**

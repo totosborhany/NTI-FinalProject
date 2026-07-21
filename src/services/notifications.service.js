@@ -21,9 +21,21 @@ export const notificationsService = {
     ,query).filter().limitFields().paginate().sort();
 
     const results = await page.query.lean();
-    return results;
 
 
+  const meta = {
+    page: query.page || 1,
+    limit: query.limit || 10,
+    totalItems: results.length,
+    totalPages: Math.ceil(results.length / (query.limit || 10)),
+    hasNextPage: (query.page || 1) < Math.ceil(results.length / (query.limit || 10)),
+    hasPreviousPage: (query.page || 1) > 1,
+  };
+
+  const summary = {
+    notificationsCount: results.length,
+  };
+    return { data: results, meta, summary };
   },
 
   markAsRead: async (notificationId, userId) => {

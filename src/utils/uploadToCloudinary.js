@@ -3,7 +3,7 @@ import { imagekit } from "../config/cloudinary.js"; // swap this import path to 
 export const uploadToCloudinary = (file) => {
   return new Promise((resolve, reject) => {
     imagekit.upload({
-      file: file.buffer, // Buffer uploaded directly
+      file: file.buffer, 
       fileName: file.originalname || "attachment",
       folder: "/nti-project"
     }, (error, result) => {
@@ -12,12 +12,12 @@ export const uploadToCloudinary = (file) => {
         return reject(error);
       }
       
-      // Map ImageKit's response to align with your existing Schema keys
+     
       resolve({
         secure_url: result.url,
-        public_id: result.fileId,       // Maps to publicId in Schema
-        resource_type: result.fileType, // "image" or "non-image" (we use file.mimetype for DB validation)
-        bytes: result.size              // Maps to size in Schema
+        public_id: result.fileId,       
+        resource_type: result.fileType, 
+        bytes: result.size              
       });
     });
   });

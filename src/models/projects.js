@@ -44,16 +44,7 @@ const projectSchema = new mongoose.Schema(
       type: [memberSchema],
       default: [],
     },
-    status: {
-      type: String,
-      enum: ["Active", "Archived"],
-      default: "Active",
-    },
-    visibility: {
-      type: String,
-      enum: ["Private", "Public"],
-      default: "Private",
-    },
+    
     color: {
       type: String,
       default: "#4f46e5",

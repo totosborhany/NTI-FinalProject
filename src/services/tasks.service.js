@@ -6,8 +6,10 @@ import { Attachment } from '../models/attachments.js';
 import { AppError } from '../utils/AppError.js';
 import { notificationsService } from './notifications.service.js';
 import {Pagination} from "../utils/pagination.js";
+import {imagekit} from "../config/cloudinary.js";
+import { ActivityLog } from '../models/logs.js';
 const populateTask = async (task) => {
-  await task.populate([{ path: 'creator' }, { path: 'assignee' }]);
+  await task.populate([{ path: 'creator' }, { path: 'assignee' },{path:"attachments"},{path:"comments"}]);
   return task;
 };
 
@@ -41,7 +43,7 @@ const page = new Pagination(
 // 3. Execute the query
 const tasks = await page.query.lean();
 
-return tasks;
+return await Promise.all(tasks.map(populateTask));
 }
 export const getTasksByProjectService = async (query,projectId) => {
   const project = await Project.findById(projectId);
@@ -61,9 +63,29 @@ export const getTasksByProjectService = async (query,projectId) => {
   .limitFields()
   .paginate();
 
+
+
 const tasks = await page.query.lean();
- 
-  return tasks;
+const populatedTasks= await Promise.all(tasks.map(populateTask))
+
+  const meta = {
+    page:query.page || 1,
+    limit:query.limit || 10,
+    totalItems:populatedTasks.length,
+    totalPages: Math.ceil(populatedTasks.length / query.limit),
+    hasNextPage: query.page <Math.ceil(populatedTasks.length / query.limit),
+  hasPreviousPage: query.page > 1,
+  };
+
+  const summary = {
+    taskCount: populatedTasks.length,
+  };
+
+return {
+  data:populatedTasks,
+  meta,
+  summary
+};
 };
 
 export const createTaskService = async (projectId, data, userId) => {
@@ -132,6 +154,15 @@ export const createTaskService = async (projectId, data, userId) => {
     });
   }
 
+  await ActivityLog.create({
+    project: projectId,
+    actor: userId,
+    type: 'TASK_CREATED',
+    entityType: 'Task',
+    entityId: task._id,
+    message: `Task "${task.title}" created by ${task.creator}`,
+  })
+
   return await populateTask(task);
 };
 
@@ -151,6 +182,7 @@ export const updateTaskService = async (taskId, data) => {
   }
 
   const previousAssigneeId = task.assignee ? task.assignee.toString() : null;
+  const previousStatus = task.status; 
 
   if (data.assignee !== undefined) {
     let assignee = null;
@@ -181,6 +213,7 @@ export const updateTaskService = async (taskId, data) => {
       throw new AppError(400, 'invalid task status');
     }
     task.status = data.status;
+
   }
 
   if (data.priority !== undefined) {
@@ -207,7 +240,17 @@ export const updateTaskService = async (taskId, data) => {
   }
 
   await task.save();
-
+if(task.status !== previousStatus){
+await ActivityLog.create({
+    project: task.project._id,
+    actor: task.creator,
+    type: 'TASK_STATUS_CHANGED',
+    entityType: 'Task',
+    entityId: task._id,
+    message: `Task "${task.title}" ${previousStatus} -> ${task.status} by ${task.creator}`,
+  });
+  
+}
   const shouldNotifyForAssignment = Boolean(
     task.assignee && previousAssigneeId !== task.assignee.toString()
   );
@@ -226,7 +269,15 @@ export const updateTaskService = async (taskId, data) => {
       },
     });
   }
-
+  
+  await ActivityLog.create({
+    project: task.project._id,
+    actor: task.creator,
+    type: 'TASK_UPDATED',
+    entityType: 'Task',
+    entityId: task._id,
+    message: `Task "${task.title}" updated by ${task.creator}`,
+  });
   return await populateTask(task);
 };
 
@@ -236,9 +287,13 @@ export const deleteTaskService = async (taskId) => {
     throw new AppError(404, 'task not found');
   }
 
-  await Comment.deleteMany({ task: taskId });
-  await Attachment.deleteMany({ task: taskId });
-  await Task.findByIdAndDelete(taskId);
+  const attachments = await Attachment.find({ task: taskId });
+  
+  for (const attachment of attachments) {
+      await imagekit.deleteFile(attachment.publicId);
+  
+  }  
 
+Promise.all([Attachment.deleteMany({ task: taskId }), Comment.deleteMany({ task: taskId }), Task.findByIdAndDelete(taskId)]);
   return task;
 };

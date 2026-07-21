@@ -5,21 +5,21 @@ import {User} from "../models/users.js";
 import Bcrypt from 'bcrypt';
 import { AppError } from '../utils/AppError.js';
 import jwt from 'jsonwebtoken';
-import crypto from "crypto";
-// import {Email} from "../utils/email";
+import ms from "ms";
 
+import Email from "../utils/email.js";
 
 const signJwtAccessToken = (userId) => {
-    const accessSecret = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET;
-    const accessExpiresIn = process.env.JWT_EXPIRES_IN || '1h';
+    const accessSecret =  process.env.JWT_SECRET;
+    const accessExpiresIn = process.env.JWT_ACCESS_EXPIRATION;
     return jwt.sign({ id: userId }, accessSecret, {
         expiresIn: accessExpiresIn,
     });
 };
 
 const signJwtRefreshToken = (userId) => {
-    const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
-    const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRATION || '7d';
+    const refreshSecret = process.env.JWT_REFRESH_SECRET;
+    const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRATION ;
     return jwt.sign({ id: userId }, refreshSecret, {
         expiresIn: refreshExpiresIn,
     });
@@ -27,14 +27,14 @@ const signJwtRefreshToken = (userId) => {
 
 const createCookie = (res, userId, type) => {
     if (type === "accessToken") {
-        const accessMaxAge = Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES || 15) * 60 * 1000;
+        const accessMaxAge =ms(process.env.JWT_ACCESS_EXPIRATION);
         return res.cookie("accessToken", signJwtAccessToken(userId), {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: accessMaxAge,
         });
     } else if (type === "refreshToken") {
-        const refreshMaxAge = Number(process.env.JWT_REFRESH_EXPIRATION_DAYS || 7) * 24 * 60 * 60 * 1000;
+        const refreshMaxAge =  ms(process.env.JWT_REFRESH_EXPIRATION);
         return res.cookie("refreshToken", signJwtRefreshToken(userId), {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -56,12 +56,11 @@ export const register = catchAsync(async (req, res, next) => {
     
     const existing = await User.findOne({ email: email });
     if (existing) {
-        // FIX: Explicitly check for false. If it's true or undefined, block registration.
         if (existing.isActive !== false) {
-            return next(new AppError(400, "Email already exists"));
+            return next(new AppError(409, "Email already exists"));
         }
 
-        await User.findByIdAndDelete(existing.id);
+        await User.findByIdAndDelete(existing._id);
     }
     const existingName = await User.findOne({ username: username });
     if(existingName){
@@ -71,22 +70,32 @@ export const register = catchAsync(async (req, res, next) => {
     
     const newUser = await User.create(req.body);
     
-    const absoluteUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}/${newUser._id}`;
 
-    await createCookie(res, newUser._id, "accessToken");
-    await createCookie(res, newUser._id, "refreshToken");
-
-    return res.status(201)
-       .location(absoluteUrl)
-       .json(ApiResponse.success("User registered successfully"));
+     createCookie(res, newUser._id, "accessToken");
+     createCookie(res, newUser._id, "refreshToken");
+    const responseUser = {
+  _id: newUser._id,
+  username: newUser.username,
+  email: newUser.email,
+  avatar: newUser.avatar,
+  role: newUser.role,
+  isVerified: newUser.isVerified,
+  isActive: newUser.isActive,
+  createdAt: newUser.createdAt,
+};
+    const userEmail= new Email("hello thank you for registering with us ",responseUser);
+    await userEmail.send("welcome to project management app");
+     res.status(201)
+       .json(ApiResponse.success("User registered successfully",responseUser));
 });
 
-export const login =catchAsync(async (req,res,next)=>{
+export const login = catchAsync(async (req,res,next)=>{
     const {email,password}=req.body;
     if(!email || !password){
         return next(new AppError(400,"all fields are required"));
     }
- const myUser = await User.findOne({email:email});
+ const myUser = await User.findOne({email:email})
+ ;
     if(! myUser || !(await Bcrypt.compare(password,myUser.password))){
         return next(new AppError(401,"sorry invalid credentiels"));
     } 
@@ -99,31 +108,31 @@ export const login =catchAsync(async (req,res,next)=>{
 
 
 export const logout = catchAsync(async (req, res, next) => {
+
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
     });
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
     });
 
     res.status(200).json(ApiResponse.success("Logged out successfully"));
 });
-// TODO cache the refresh token in a caching db for faster performace in v2
-//TODO socket.io in v2
+// TODO cache the refresh token in a caching db for faster performace 
+
 export const refresh = catchAsync(async (req,res,next)=>{
 
 const refreshToken = req.cookies.refreshToken;
+console.log(refreshToken);
 if(!refreshToken){
 return next(new AppError(401,"please log in first"));
 }
     let decoded;
     try {
-        const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+        const refreshSecret = process.env.JWT_REFRESH_SECRET;
         decoded = jwt.verify(refreshToken, refreshSecret);
     } catch (err) {
         return next(new AppError(401, "Your session has expired. Please log in again."));
@@ -135,9 +144,9 @@ return next(new AppError(401,"please log in first"));
         return next(new AppError(401, "The user belonging to this token no longer exists."));
     }
     createCookie(res, user._id, "accessToken");
+    ``
     res.status(200).json(ApiResponse.success("Token renewed"));
 
 
 });
 
-//TODO forget passweord in v2

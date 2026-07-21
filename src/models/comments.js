@@ -26,6 +26,10 @@ const commentSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+        commentAttachments: {
+          type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Attachment" }],
+          default: [],
+        },
   },
   { timestamps: true }
 );

@@ -14,10 +14,12 @@ router.route('/:taskId')
   .patch(protect, authorizeTaskTo('OWNER', 'ADMIN'), updateTask)
   .delete(protect, authorizeTaskTo('OWNER', 'ADMIN'), deleteTask);
 
-router.route('/:taskId/comments').
-get(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER'), getCommentsByTask).
-post(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER') ,createComment);
+router.route('/:taskId/comments').post(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER'),upload.single("file") ,createComment);
+//.get(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER'), getCommentsByTask);
 
-router.route('/:taskId/attachments').get(protect, authorizeTaskTo('OWNER', 'ADMIN','MEMBER'),getAttachmentsByTask).post(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER') ,upload.single('file'),createAttachment);
-router.delete("/:taskId/attachments/:attachmentId",protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER'),upload.single('file') ,deleteAttachment)
+router.route('/:taskId/attachments').post(protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER') ,upload.single('file'),createAttachment);
+//.get(protect, authorizeTaskTo('OWNER', 'ADMIN','MEMBER'),getAttachmentsByTask);
+
+router.delete("/:taskId/attachments/:attachmentId",protect,authorizeTaskTo('OWNER', 'ADMIN','MEMBER') ,deleteAttachment)
+
 export default router;

@@ -3,11 +3,11 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 export const getAllTasks  =catchAsync(async (req,res,next)=>{
-  const mytasks = await getMyTaskService(req.query,req.user.id);
-  if(!mytasks){
+  const result = await getMyTaskService(req.query,req.user.id);
+  if(!result.data || result.data.length === 0){
     return next(new AppError(404, 'No tasks found for this project'));
   }
-    return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', mytasks));
+    return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', result.data,result.meta,result.summary));
 
 });
 export const getTasksByProject = catchAsync(async (req, res, next) => {
