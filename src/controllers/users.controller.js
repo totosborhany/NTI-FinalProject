@@ -17,15 +17,32 @@ import Email from "../utils/email.js";
 import crypto from "crypto";
 import { Project } from '../models/projects.js';
 import{Task} from "../models/tasks.js";
+import redis from "../config/redisSetup.js";
 import { Invitation } from '../models/invitations.js';
-export const getMe = catchAsync(async (req, res, next) => {
-  const userId = req.user.id;
-  const users = await userData(userId);
-  if (!users) {
-    return next(new AppError(404, 'User not found'));
-  }
 
-  res.status(200).json(ApiResponse.success('User fetched successfully', users));
+
+export const getMe = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    let result;
+
+    try {
+        result = await userData(userId);
+    } catch (err) {
+        return next(new AppError(500, `Sorry, a problem occurred: ${err.message}`));
+    }
+
+    if (result === null || !result.user) {
+        return next(new AppError(404, "User not found"));
+    }
+
+    res.status(200).json(
+        ApiResponse.success(
+            "User fetched successfully",
+            result.user,
+            null,
+            result.summary
+        )
+    );
 });
 
 export const deleteMe = catchAsync(async (req, res, next) => {
@@ -58,6 +75,19 @@ export const deleteMe = catchAsync(async (req, res, next) => {
         }
     )
 ]);
+
+
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    });
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    });
+    await redis.del(`refreshToken:${userId}`);
+    await redis.del(`user:${userId}:profile`);
 
   res.status(200).json(ApiResponse.success('User deleted successfully', null));
 });
@@ -130,10 +160,20 @@ export const updateUserById = catchAsync(async (req, res, next) => {
 
 export const deleteUserById = catchAsync(async (req, res, next) => {
   const user = await deleteUserByIdService(req.params.id);
+
   if (!user) {
     return next(new AppError(404, 'User not found'));
   }
+        res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    });
 
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    });
+    await redis.del(`refreshToken:${id}`);
   res.status(200).json(ApiResponse.success('User deleted successfully', user));
 });
 export const updatePassword = catchAsync(async (req,res,next)=>{

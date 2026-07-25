@@ -5,6 +5,7 @@ import { Project } from '../models/projects.js';
 import { notificationsService } from './notifications.service.js';
 import { Pagination } from '../utils/pagination.js';
 import { ActivityLog } from '../models/logs.js';
+import redis from '../config/redisSetup.js';
 export const sendInvitation = async (userId, recieverEmail, projectId) => {
   const reciever = await User.findOne({ email: recieverEmail, isActive: true });
   if (!reciever) {
@@ -52,8 +53,9 @@ await Promise.all([ActivityLog.create({
   return invitation;
 };
 
-export const editInvitationService = async (projectId, invitationId, data) => {
+export const editInvitationService = async (projectId, invitationId, data,userId) => {
   const invitation = await Invitation.findOne({ _id: invitationId, project: projectId });
+  await redis.del(`user:${userId}:profile`);
 
   if (!invitation) {
     throw new AppError(404, 'invitation not found');
@@ -98,8 +100,9 @@ export const editInvitationService = async (projectId, invitationId, data) => {
   return invitation;
 };
 
-export const deleteInvitationService = async (projectId, invitationId) => {
+export const deleteInvitationService = async (projectId, invitationId,userId) => {
   const invitation = await Invitation.findOneAndDelete({ _id: invitationId, project: projectId });
+  await redis.del(`user:${userId}:profile`);
 
   if (!invitation) {
     throw new AppError(404, 'invitation not found');
@@ -142,7 +145,9 @@ const invitations = await page.query.lean();
   return { data: invitations, meta: meta, summary: summary };
 };
 
+
 export const reactToinvitationService = async (userId, invitationId, status) => {
+  await redis.del(`user:${userId}:profile`);
   const invitation = await Invitation.findById(invitationId)
     .populate('project')
     .populate('receiver', 'email');

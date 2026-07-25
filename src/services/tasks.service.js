@@ -8,6 +8,7 @@ import { notificationsService } from './notifications.service.js';
 import {Pagination} from "../utils/pagination.js";
 import {imagekit} from "../config/cloudinary.js";
 import { ActivityLog } from '../models/logs.js';
+import redis from "../config/redisSetup.js";
 const populateTask = async (task) => {
   await task.populate([{ path: 'creator' }, { path: 'assignee' },{path:"attachments"},{path:"comments"}]);
   return task;
@@ -89,6 +90,8 @@ return {
 };
 
 export const createTaskService = async (projectId, data, userId) => {
+    await redis.del(`user:${userId}:profile`);
+
   const project = await Project.findById(projectId);
   if (!project) {
     throw new AppError(404, 'project not found');
@@ -109,6 +112,8 @@ export const createTaskService = async (projectId, data, userId) => {
     if (!isMember) {
       throw new AppError(404, 'sorry he isn\'t a member invite him first');
     }
+        await redis.del(`user:${data.assignee}:profile`);
+
   }
 
   const validStatuses = ['TODO', 'IN_PROGRESS', 'DONE'];
@@ -176,6 +181,7 @@ export const getTaskByIdService = async (taskId) => {
 };
 
 export const updateTaskService = async (taskId, data) => {
+
   const task = await Task.findById(taskId).populate('project');
   if (!task) {
     throw new AppError(404, 'task not found');
@@ -203,6 +209,9 @@ export const updateTaskService = async (taskId, data) => {
     }
     console.log(task.assignee);
     task.assignee = assignee ? assignee._id : null;
+        await redis.del(`user:${task.creator}:profile`);
+    await redis.del(`user:${task.assignee}:profile`);
+
   }
 
   const validStatuses = ['TODO', 'IN_PROGRESS', 'DONE'];
@@ -294,6 +303,6 @@ export const deleteTaskService = async (taskId) => {
   
   }  
 
-Promise.all([Attachment.deleteMany({ task: taskId }), Comment.deleteMany({ task: taskId }), Task.findByIdAndDelete(taskId)]);
+Promise.all([  redis.del(`user:${task.creator}:profile`),Attachment.deleteMany({ task: taskId }), Comment.deleteMany({ task: taskId }), Task.findByIdAndDelete(taskId)]);
   return task;
 };

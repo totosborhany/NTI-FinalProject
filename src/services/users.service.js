@@ -2,11 +2,71 @@ import { User } from '../models/users.js';
 import { AppError } from '../utils/AppError.js';
 import {imagekit} from "../config/cloudinary.js";
 import {Pagination} from  "../utils/pagination.js";
+import redis from "../config/redisSetup.js";
 import {uploadToCloudinary} from "../utils/uploadToCloudinary.js";
-export const userData = async (id) => {
-  return await User.findById(id).select('-password').lean().exec();
-};
+import { Project } from '../models/projects.js';
+import { Task } from '../models/tasks.js';
+import {Notification} from "../models/notifications.js";
+import { Invitation } from '../models/invitations.js';
 
+export const userData = async (id) => {
+    const key = `user:${id}:profile`;
+
+    // 1. Check Redis first
+    const cached = await redis.get(key);
+
+    if (cached) {
+        console.log('Redis HIT');
+        return JSON.parse(cached);
+    }
+
+    console.log('Redis MISS');
+
+    // 2. Fetch user
+    const user = await User.findById(id)
+        .select('-password')
+        .lean();
+
+    if (!user) {
+        return null;
+    }
+
+    // 3. Calculate dashboard stats in parallel
+    const [
+        projectCount,
+        taskCount,
+        completedTaskCount,
+        unreadNotifications,
+        pendingInvitations
+    ] = await Promise.all([
+        Project.countDocuments({ 'members.user': id }),
+        Task.countDocuments({ assignee: id }),
+        Task.countDocuments({ assignee: id, status: 'DONE' }),
+        Notification.countDocuments({ receiver: id, isRead: false }),
+        Invitation.countDocuments({ receiver: id, status: 'PENDING' })
+    ]);
+
+    const summary = {
+        projectCount,
+        taskCount,
+        completedTaskCount,
+        unreadNotifications,
+        pendingInvitations
+    };
+
+    const result = { user, summary };
+
+    // 4. Cache the whole result for 5 minutes
+    await redis.set(
+        key,
+        JSON.stringify(result),
+        {
+            EX: 60 * 5
+        }
+    );
+
+    return result;
+};
 // export const deleteUser = async (id) => {
 
 //   return await User.findByIdAndUpdate(id, { isActive: false }, { new: true }).select('-password').lean().exec();
@@ -14,7 +74,7 @@ export const userData = async (id) => {
 
 export const updateUser = async (id, data, file) => {
   const user = await User.findById(id);
-
+  await redis.del(`user:${id}:profile`);
   if (!user) {
     throw new AppError(404, 'user not found');
   }
@@ -66,6 +126,7 @@ if (
 ) {
   throw new AppError(400, "Username already exists");
 }
+
   await user.save();
 
   return await User.findById(user._id).select('-password');
@@ -143,6 +204,7 @@ if (
 
 export const deleteUserById = async (id) => {
     const user = await User.findById(id);
+      await redis.del(`user:${id}:profile`);
 
     if (!user) {
         throw new AppError(404, "User not found");
@@ -159,6 +221,7 @@ export const deleteUserById = async (id) => {
     await user.save();
 
     user.password = undefined;
+
 
     return user;
 };

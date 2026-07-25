@@ -20,7 +20,7 @@ export const createInvitation = catchAsync(async (req, res, next) => {
 
 export const editInvitation = catchAsync(async (req, res, next) => {
   const { projectId, invitationId } = req.params;
-  const invitation = await editInvitationService(projectId, invitationId, req.body);
+  const invitation = await editInvitationService(projectId, invitationId, req.body,req.user.id);
 
   if (!invitation) {
     return next(new AppError(400, 'sorry could not update invitation'));
@@ -31,7 +31,7 @@ export const editInvitation = catchAsync(async (req, res, next) => {
 
 export const deleteInvitation = catchAsync(async (req, res, next) => {
   const { projectId, invitationId } = req.params;
-  const invitation = await deleteInvitationService(projectId, invitationId);
+  const invitation = await deleteInvitationService(projectId, invitationId,req.user.id);
 
   if (!invitation) {
     return next(new AppError(400, 'sorry could not delete invitation'));

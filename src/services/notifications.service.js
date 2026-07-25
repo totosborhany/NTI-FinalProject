@@ -1,5 +1,6 @@
 import { Notification } from '../models/notifications.js';
 import { Pagination } from '../utils/pagination.js';
+import redis from '../config/redisSetup.js';
 export const notificationsService = {
   createNotification: async ({ receiver, sender = null, type, title, message, metadata = {} }) => {
     if (!receiver) {
@@ -39,7 +40,8 @@ export const notificationsService = {
   },
 
   markAsRead: async (notificationId, userId) => {
-      
+                await redis.del(`user:${userId}:profile`);
+
     return Notification.findOneAndUpdate(
       { _id: notificationId, receiver: userId },
       { read: true },

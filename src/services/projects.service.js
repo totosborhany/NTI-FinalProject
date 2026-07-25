@@ -9,6 +9,7 @@ import { Notification } from '../models/notifications.js';
 import {Attachment}from "../models/attachments.js";
 import {imagekit} from "../config/cloudinary.js";
 import { Comment } from '../models/comments.js';
+import redis from '../config/redisSetup.js';
 const populateProject = async (project) => {
   return await project.populate([{ path: 'owner' }, { path: 'members.user' }]);
 };
@@ -54,6 +55,8 @@ return { data: projects, meta, summary };
 };
 
 export const createProjectService = async (data, userId) => {
+          await redis.del(`user:${userId}:profile`);
+  
   const project = await Project.create({
     ...data,
     owner: userId,
@@ -194,6 +197,7 @@ export const addMemberService = async (project, data,actorId) => {
 };
 
 export const removeMemberService = async (projectid, userId, actorId) => {
+
   const project = await Project.findById(projectid);
   if (!project) {
     throw new AppError(404, 'project not found');
@@ -206,6 +210,7 @@ export const removeMemberService = async (projectid, userId, actorId) => {
   if (!user) {
     throw new AppError(404, 'user not found');
   }
+          await redis.del(`user:${userId}:profile`);
 
   const memberIndex = project.members.findIndex((member) => member.user.toString() === userId.toString());
   if (memberIndex === -1) {
