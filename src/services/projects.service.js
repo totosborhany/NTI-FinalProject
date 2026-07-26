@@ -10,6 +10,7 @@ import {Attachment}from "../models/attachments.js";
 import {imagekit} from "../config/cloudinary.js";
 import { Comment } from '../models/comments.js';
 import redis from '../config/redisSetup.js';
+import { ca } from 'zod/locales';
 const populateProject = async (project) => {
   return await project.populate([{ path: 'owner' }, { path: 'members.user' }]);
 };
@@ -295,3 +296,14 @@ export const getAllMembersService = async (projectId) => {
   // Now that the project is populated, you can safely return the members
   return project.members;
 };
+export const getAllActivitesService = async (projectId) => {
+try{
+  const activity = await ActivityLog.find({ project: projectId }).sort({ createdAt: -1 });
+  return activity;
+ 
+}catch(err){
+      throw new AppError(404, "couldnt find project");
+
+   
+ }
+}

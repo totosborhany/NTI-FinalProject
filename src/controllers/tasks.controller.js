@@ -2,6 +2,7 @@ import { getMyTaskService,getTasksByProjectService, createTaskService, getTaskBy
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+
 export const getAllTasks  =catchAsync(async (req,res,next)=>{
   const result = await getMyTaskService(req.query,req.user.id);
   if(!result.data || result.data.length === 0){

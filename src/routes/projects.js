@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMembers,getAllMyProjects, createProject, getProjectById, updateProject, deleteProject, addMember, removeMember, changeMemberRole, archiveProject, restoreProject } from '../controllers/projects.controller.js';
+import {projectActivity, getAllMembers,getAllMyProjects, createProject, getProjectById, updateProject, deleteProject, addMember, removeMember, changeMemberRole } from '../controllers/projects.controller.js';
 import { protect } from '../middlewares/authenticate.js';
 import{authorizeProjectTo} from "../middlewares/authorize.project.js";
 import { sendInvitation } from '../services/invitations.service.js';
@@ -13,6 +13,9 @@ router.get('/:projectId/members/',protect,authorizeProjectTo("OWNER","ADMIN","ME
 router.patch('/:projectId/members/:userId/role', protect, authorizeProjectTo("ADMIN","OWNER"), changeMemberRole);
 // router.patch('/:projectId/archive', protect, authorizeProjectTo("ADMIN","OWNER"),archiveProject);
 // router.patch('/:projectId/restore', protect, authorizeProjectTo("ADMIN","OWNER"),restoreProject);
+//GET /projects/:projectId/activity
+
+router.get('/:projectId/activity',protect,authorizeProjectTo("OWNER","ADMIN","MEMBER"),projectActivity);
 router
   .route('/:projectId/tasks')
   .get(protect, authorizeProjectTo('OWNER', 'ADMIN', 'MEMBER'), getTasksByProject)

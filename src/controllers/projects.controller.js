@@ -1,4 +1,5 @@
-import {getAllMembersService, getAllMyProjectsService, createProjectService, getProjectByIdService, updateProjectService, deleteProjectService, addMemberService, removeMemberService, changeMemberRoleService,  } from '../services/projects.service.js';
+import { ca } from 'zod/v4/locales';
+import {getAllMembersService,getAllActivitesService, getAllMyProjectsService, createProjectService, getProjectByIdService, updateProjectService, deleteProjectService, addMemberService, removeMemberService, changeMemberRoleService,  } from '../services/projects.service.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { AppError } from '../utils/AppError.js';
 import { catchAsync } from '../utils/catchAsync.js';
@@ -52,19 +53,18 @@ export const changeMemberRole = catchAsync(async (req, res) => {
   return res.status(200).json(ApiResponse.success('member role updated successfully', project));
 });
 
-export const archiveProject = catchAsync(async (req, res) => {
-  const project = await archiveProjectService(req.params.projectId);
-  return res.status(200).json(ApiResponse.success('project archived successfully', project));
-});
-
-export const restoreProject = catchAsync(async (req, res) => {
-  const project = await restoreProjectService(req.params.projectId);
-  return res.status(200).json(ApiResponse.success('project restored successfully', project));
-});
 export const getAllMembers = catchAsync(async (req,res,next)=>{
   const members = await getAllMembersService(req.params.projectId);
   if(!members){
 return next(new AppError(400,"Sorry no members"));
   }
   return res.status(200).json(ApiResponse.success('members returned successfully', members));
+});
+
+export const projectActivity = catchAsync(async (req,res,next)=>{
+  const activity = await getAllActivitesService(req.params.projectId);
+  if(!activity){
+return next(new AppError(400,"Sorry no activities"));
+  }
+  return res.status(200).json(ApiResponse.success('activites returned successfully', activity));
 });

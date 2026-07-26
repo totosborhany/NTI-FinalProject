@@ -39,18 +39,21 @@ export const notificationsService = {
     return { data: results, meta, summary };
   },
 
-  markAsRead: async (notificationId, userId) => {
-                await redis.del(`user:${userId}:profile`);
+  markAllAsRead: async (userId) => {
+    await redis.del(`user:${userId}:profile`);
 
-    return Notification.findOneAndUpdate(
-      { _id: notificationId, receiver: userId },
-      { read: true },
-      { new: true }
+    await Notification.updateMany(
+        {
+            receiver: userId,
+            read: false
+        },
+        {
+            $set: {
+                read: true
+            }
+        }
     );
-  },
 
-  placeholder: async () => ({
-    module: 'notifications',
-    message: 'Notifications service scaffold is ready. Implement business logic next.',
-  }),
+    return;
+},
 };

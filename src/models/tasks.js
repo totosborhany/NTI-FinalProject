@@ -1,20 +1,5 @@
 import mongoose from "mongoose";
 
-const checklistItemSchema = new mongoose.Schema(
-  {
-    text: {
-      type: String,
-      required: [true, "Checklist item text is required"],
-      trim: true,
-      maxlength: [500, "Checklist item text cannot exceed 500 characters"],
-    },
-    completed: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  { _id: true }
-);
 
 const taskSchema = new mongoose.Schema(
   {
@@ -68,10 +53,7 @@ const taskSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    checklist: {
-      type: [checklistItemSchema],
-      default: [],
-    },
+   
     attachments: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Attachment" }],
       default: [],
