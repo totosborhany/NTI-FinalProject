@@ -1,0 +1,2760 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "register user",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "username": "borhany",
+                "email": "borhany@gmail.com",
+                "password": "borhany940",
+                "confirmPassword": "borhany940"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": false,
+                  "message": "Email already exists",
+                  "errors": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "user login",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "email": "totos@gmail.com",
+                "password": "Totos940"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User logged in successfully",
+                  "data": null
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "summary": "refrsh token",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Token renewed",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "summary": "logout user",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Logged out successfully",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "summary": "get me and all user",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User fetched successfully",
+                  "data": {
+                    "_id": "6a54c20ad0606efc4bfbe73c",
+                    "username": "admin",
+                    "email": "admin@gmail.com",
+                    "avatar": "",
+                    "role": "admin",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:46:28.343Z",
+                    "updatedAt": "2026-07-13T10:46:28.343Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "summary": "update me",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "username": "admin123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User updated successfully",
+                  "data": {
+                    "_id": "6a54c20ad0606efc4bfbe73c",
+                    "username": "admin123",
+                    "email": "admin@gmail.com",
+                    "avatar": "",
+                    "role": "admin",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:46:28.343Z",
+                    "updatedAt": "2026-07-13T13:33:13.396Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "delete me ",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": ""
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User deleted successfully",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/password": {
+      "patch": {
+        "summary": "update password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "oldPassword": "TotosAdmin940",
+                "newPassword": "TotosAdmin941",
+                "confirmNewPassword": "TotosAdmin941"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "password updated successfully",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/": {
+      "get": {
+        "summary": "admin user endpoints",
+        "deprecated": false,
+        "description": "for admin only",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User fetched successfully",
+                  "data": {
+                    "_id": "6a54e6f7d0606efc4bfbe75b",
+                    "username": "totos",
+                    "email": "totos@gmail.com",
+                    "avatar": "",
+                    "role": "user",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:46:28.343Z",
+                    "updatedAt": "2026-07-13T10:46:28.343Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "summary": "admin create user",
+        "deprecated": false,
+        "description": "admin only",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "username": "admin2",
+                "email": "admin2@gmail.com",
+                "password": "Admin12345",
+                "confirmPassword": "Admin12345",
+                "role": "admin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User created successfully",
+                  "data": {
+                    "_id": "6a5d0d1dcdc27899b5484634",
+                    "username": "admin2",
+                    "email": "admin2@gmail.com",
+                    "avatar": "",
+                    "role": "admin",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-19T16:39:11.078Z",
+                    "updatedAt": "2026-07-19T16:39:11.078Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/6a54c072f8a0b102dd43823f": {
+      "get": {
+        "summary": "get user by id",
+        "deprecated": false,
+        "description": "admin only",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User fetched successfully",
+                  "data": {
+                    "_id": "6a54c072f8a0b102dd43823f",
+                    "username": "testuser123",
+                    "email": "test@example.com",
+                    "avatar": "",
+                    "role": "user",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:39:00.522Z",
+                    "updatedAt": "2026-07-13T10:39:00.522Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "summary": "update user",
+        "deprecated": false,
+        "description": "admin only",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "username": "testguynigga"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User updated successfully",
+                  "data": {
+                    "_id": "6a54c072f8a0b102dd43823f",
+                    "username": "testguynigga",
+                    "email": "test@example.com",
+                    "avatar": "",
+                    "role": "user",
+                    "isVerified": false,
+                    "isActive": true,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:39:00.522Z",
+                    "updatedAt": "2026-07-19T17:53:13.228Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "admin delete user",
+        "deprecated": false,
+        "description": "admin only",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "User deleted successfully",
+                  "data": {
+                    "_id": "6a54c072f8a0b102dd43823f",
+                    "username": "testguynigga",
+                    "email": "test@example.com",
+                    "avatar": "",
+                    "role": "user",
+                    "isVerified": false,
+                    "isActive": false,
+                    "isOnline": false,
+                    "lastSeen": null,
+                    "createdAt": "2026-07-13T10:39:00.522Z",
+                    "updatedAt": "2026-07-19T17:54:18.310Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/forgot-password": {
+      "post": {
+        "summary": "forgot password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "email": "ahmedborhany13@gmail.com"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "reset password link sent to your email",
+                  "data": null,
+                  "meta": null,
+                  "summary": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/users/reset-password": {
+      "post": {
+        "summary": "reseet password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "b48e9e416b0795c55d8c745f3c7f58003d525b8478897b79eb5b95eeb88cc58b",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "password": "borhany123",
+                "confirmPassword": "borhany123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "password reset successfully",
+                  "data": null,
+                  "meta": null,
+                  "summary": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/": {
+      "get": {
+        "summary": "get all my projects",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "here are your projects",
+                  "data": []
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "summary": "create project",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "name": "leetcode project",
+                "description": "this project for leetcode mastery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "project created  successfully",
+                  "data": {
+                    "name": "NTI project",
+                    "description": "this project for the nti project in summer 2026",
+                    "owner": "6a54c20ad0606efc4bfbe73c",
+                    "members": [
+                      {
+                        "user": "6a54c20ad0606efc4bfbe73c",
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-13T21:33:59.313Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Private",
+                    "color": "#4f46e5",
+                    "_id": "6a5559c78f335553c20e4517",
+                    "createdAt": "2026-07-13T21:33:59.317Z",
+                    "updatedAt": "2026-07-13T21:33:59.317Z",
+                    "__v": 0
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a555be78f335553c20e4525": {
+      "patch": {
+        "summary": "update project",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "visibility": "Public"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "project updated successfully",
+                  "data": {
+                    "_id": "6a555be78f335553c20e4525",
+                    "name": "leetcode project",
+                    "description": "this project for leetcode mastery",
+                    "owner": {
+                      "_id": "6a555bcb8f335553c20e4522",
+                      "username": "totos",
+                      "email": "totos@gmail.com",
+                      "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T21:33:34.697Z",
+                      "updatedAt": "2026-07-13T21:33:34.697Z",
+                      "__v": 0
+                    },
+                    "members": [
+                      {
+                        "user": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-13T21:43:03.510Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Public",
+                    "color": "#4f46e5",
+                    "createdAt": "2026-07-13T21:43:03.511Z",
+                    "updatedAt": "2026-07-13T22:22:07.606Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a555be78f335553c20e4525/members/": {
+      "get": {
+        "summary": "get all  project members",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": false,
+                  "message": "Interccnal server error",
+                  "errors": "project.members.populate is not a function"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a58e0f1bf7f8678f6a05c8b": {
+      "get": {
+        "summary": "get project by id",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "project found",
+                  "data": {
+                    "_id": "6a58e0f1bf7f8678f6a05c8b",
+                    "name": "my awsome project",
+                    "description": "3rj23nru2rn32i",
+                    "owner": {
+                      "_id": "6a54c20ad0606efc4bfbe73c",
+                      "username": "admin123",
+                      "email": "admin@gmail.com",
+                      "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                      "avatar": "photo",
+                      "role": "admin",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T10:46:28.343Z",
+                      "updatedAt": "2026-07-13T21:14:32.311Z",
+                      "__v": 0
+                    },
+                    "members": [
+                      {
+                        "user": {
+                          "_id": "6a54c20ad0606efc4bfbe73c",
+                          "username": "admin123",
+                          "email": "admin@gmail.com",
+                          "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                          "avatar": "photo",
+                          "role": "admin",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T10:46:28.343Z",
+                          "updatedAt": "2026-07-13T21:14:32.311Z",
+                          "__v": 0
+                        },
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-16T13:47:29.114Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Private",
+                    "color": "#6366f1",
+                    "createdAt": "2026-07-16T13:47:29.118Z",
+                    "updatedAt": "2026-07-16T13:47:29.118Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "delete project by id",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "project deleted successfully",
+                  "data": {
+                    "_id": "6a58e0f1bf7f8678f6a05c8b",
+                    "name": "my awsome project",
+                    "description": "3rj23nru2rn32i",
+                    "owner": "6a54c20ad0606efc4bfbe73c",
+                    "members": [
+                      {
+                        "user": "6a54c20ad0606efc4bfbe73c",
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-16T13:47:29.114Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Private",
+                    "color": "#6366f1",
+                    "createdAt": "2026-07-16T13:47:29.118Z",
+                    "updatedAt": "2026-07-16T13:47:29.118Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a5559c78f335553c20e4517/members/6a55eaf2f28089e84b1880bb/role": {
+      "patch": {
+        "summary": "change member role",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "role": "ADMIN"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "member role updated successfully",
+                  "data": {
+                    "_id": "6a5559c78f335553c20e4517",
+                    "name": "NTI project",
+                    "description": "this project for the nti project in summer 2026",
+                    "owner": {
+                      "_id": "6a54c20ad0606efc4bfbe73c",
+                      "username": "admin123",
+                      "email": "admin@gmail.com",
+                      "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                      "avatar": "photo",
+                      "role": "admin",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T10:46:28.343Z",
+                      "updatedAt": "2026-07-13T21:14:32.311Z",
+                      "__v": 0
+                    },
+                    "members": [
+                      {
+                        "user": {
+                          "_id": "6a54c20ad0606efc4bfbe73c",
+                          "username": "admin123",
+                          "email": "admin@gmail.com",
+                          "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                          "avatar": "photo",
+                          "role": "admin",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T10:46:28.343Z",
+                          "updatedAt": "2026-07-13T21:14:32.311Z",
+                          "__v": 0
+                        },
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-13T21:33:59.313Z"
+                      },
+                      {
+                        "user": {
+                          "_id": "6a55eaf2f28089e84b1880bb",
+                          "username": "borhany",
+                          "email": "borhany@gmail.com",
+                          "password": "$2b$10$fcO71VTdLEmjFsQ5Ob4cWOl2Lfh7bfhcINk2fMVm5R4jUW5rxa4ya",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-14T07:49:51.321Z",
+                          "updatedAt": "2026-07-14T07:49:51.321Z",
+                          "__v": 0
+                        },
+                        "role": "ADMIN",
+                        "joinedAt": "2026-07-20T11:14:26.667Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Private",
+                    "color": "#4f46e5",
+                    "createdAt": "2026-07-13T21:33:59.317Z",
+                    "updatedAt": "2026-07-20T11:25:32.819Z",
+                    "__v": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a5559c78f335553c20e4517/members/6a55eaf2f28089e84b1880bb": {
+      "delete": {
+        "summary": "remove member by id",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "member removed successfully",
+                  "data": {
+                    "_id": "6a5559c78f335553c20e4517",
+                    "name": "NTI project",
+                    "description": "this project for the nti project in summer 2026",
+                    "owner": {
+                      "_id": "6a54c20ad0606efc4bfbe73c",
+                      "username": "admin123",
+                      "email": "admin@gmail.com",
+                      "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                      "avatar": "photo",
+                      "role": "admin",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T10:46:28.343Z",
+                      "updatedAt": "2026-07-13T21:14:32.311Z",
+                      "__v": 0
+                    },
+                    "members": [
+                      {
+                        "user": {
+                          "_id": "6a54c20ad0606efc4bfbe73c",
+                          "username": "admin123",
+                          "email": "admin@gmail.com",
+                          "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                          "avatar": "photo",
+                          "role": "admin",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T10:46:28.343Z",
+                          "updatedAt": "2026-07-13T21:14:32.311Z",
+                          "__v": 0
+                        },
+                        "role": "OWNER",
+                        "joinedAt": "2026-07-13T21:33:59.313Z"
+                      }
+                    ],
+                    "status": "Active",
+                    "visibility": "Private",
+                    "color": "#4f46e5",
+                    "createdAt": "2026-07-13T21:33:59.317Z",
+                    "updatedAt": "2026-07-20T11:36:08.294Z",
+                    "__v": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a5559c78f335553c20e4517/activity": {
+      "get": {
+        "summary": "activites of project",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/invitations/": {
+      "get": {
+        "summary": "get all invitations",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Invitations retrieved successfully",
+                  "data": {
+                    "received": [],
+                    "sent": [
+                      {
+                        "_id": "6a55f14351d6015d116ee9cb",
+                        "project": {
+                          "_id": "6a555be78f335553c20e4525",
+                          "name": "leetcode project"
+                        },
+                        "sender": "6a555bcb8f335553c20e4522",
+                        "receiver": "6a55eaf2f28089e84b1880bb",
+                        "status": "Pending",
+                        "expiresAt": "2026-07-21T08:20:19.609Z",
+                        "createdAt": "2026-07-14T08:20:19.629Z",
+                        "updatedAt": "2026-07-14T08:20:19.629Z",
+                        "__v": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/invitations/6a555be78f335553c20e4525": {
+      "post": {
+        "summary": "send invitaton",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "recieverEmail": "borhany@gmail.com"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "inviation made and sent",
+                  "data": {
+                    "project": "6a555be78f335553c20e4525",
+                    "sender": "6a555bcb8f335553c20e4522",
+                    "receiver": "6a55eaf2f28089e84b1880bb",
+                    "status": "Pending",
+                    "_id": "6a55f14351d6015d116ee9cb",
+                    "expiresAt": "2026-07-21T08:20:19.609Z",
+                    "createdAt": "2026-07-14T08:20:19.629Z",
+                    "updatedAt": "2026-07-14T08:20:19.629Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/invitations/6a55f14351d6015d116ee9cb": {
+      "patch": {
+        "summary": "react to invitation",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "status": "Accepted"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": false,
+                  "message": "This invitation has already been handled",
+                  "errors": {
+                    "name": "Error",
+                    "errors": null,
+                    "stack": "Error: This invitation has already been handled\n    at reactToinvitationService (file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/services/invitations.service.js:128:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/controllers/invitations.controller.js:58:20"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/invitations/6a555be78f335553c20e4525/6a57cd8e86aa7e3030ad0851": {
+      "delete": {
+        "summary": "delete invitation",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": ""
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a555be78f335553c20e4525/tasks": {
+      "post": {
+        "summary": "create task",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "title": "solve 2sum",
+                "description": "here is the link for the problem : https://leetcode.com/problems/two-sum/description/"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Task created successfully",
+                  "data": {
+                    "project": "6a555be78f335553c20e4525",
+                    "title": "solve 2sum",
+                    "description": "here is the link for the problem : https://leetcode.com/problems/two-sum/description/",
+                    "status": "TODO",
+                    "priority": "MEDIUM",
+                    "assignee": null,
+                    "creator": {
+                      "_id": "6a555bcb8f335553c20e4522",
+                      "username": "totos",
+                      "email": "totos@gmail.com",
+                      "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T21:33:34.697Z",
+                      "updatedAt": "2026-07-13T21:33:34.697Z",
+                      "__v": 0
+                    },
+                    "dueDate": null,
+                    "labels": [],
+                    "attachments": [],
+                    "comments": [],
+                    "order": 0,
+                    "_id": "6a560050be93c07ce4e375a2",
+                    "checklist": [],
+                    "createdAt": "2026-07-14T09:24:32.449Z",
+                    "updatedAt": "2026-07-14T09:24:32.449Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/6a560050be93c07ce4e375a2": {
+      "get": {
+        "summary": "get task by id",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Task retrieved successfully",
+                  "data": {
+                    "_id": "6a560050be93c07ce4e375a2",
+                    "project": "6a555be78f335553c20e4525",
+                    "title": "solve 2sum",
+                    "description": "here is the link for the problem : https://leetcode.com/problems/two-sum/description/",
+                    "status": "TODO",
+                    "priority": "MEDIUM",
+                    "assignee": null,
+                    "creator": {
+                      "_id": "6a555bcb8f335553c20e4522",
+                      "username": "totos",
+                      "email": "totos@gmail.com",
+                      "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T21:33:34.697Z",
+                      "updatedAt": "2026-07-13T21:33:34.697Z",
+                      "__v": 0
+                    },
+                    "dueDate": null,
+                    "labels": [],
+                    "attachments": [],
+                    "comments": [],
+                    "order": 0,
+                    "checklist": [],
+                    "createdAt": "2026-07-14T09:24:32.449Z",
+                    "updatedAt": "2026-07-14T09:24:32.449Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "summary": "update task",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "assignee": "borhany@gmail.com"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Task updated successfully",
+                  "data": {
+                    "_id": "6a560050be93c07ce4e375a2",
+                    "project": {
+                      "_id": "6a555be78f335553c20e4525",
+                      "name": "leetcode project",
+                      "description": "this project for leetcode mastery",
+                      "owner": "6a555bcb8f335553c20e4522",
+                      "members": [
+                        {
+                          "user": "6a555bcb8f335553c20e4522",
+                          "role": "OWNER",
+                          "joinedAt": "2026-07-13T21:43:03.510Z"
+                        },
+                        {
+                          "user": "6a55eaf2f28089e84b1880bb",
+                          "role": "MEMBER",
+                          "joinedAt": "2026-07-14T08:30:49.792Z"
+                        }
+                      ],
+                      "status": "Active",
+                      "visibility": "Public",
+                      "color": "#4f46e5",
+                      "createdAt": "2026-07-13T21:43:03.511Z",
+                      "updatedAt": "2026-07-14T08:30:49.802Z",
+                      "__v": 1
+                    },
+                    "title": "solve 2sum",
+                    "description": "here is the link for the problem : https://leetcode.com/problems/two-sum/description/",
+                    "status": "TODO",
+                    "priority": "MEDIUM",
+                    "assignee": {
+                      "_id": "6a55eaf2f28089e84b1880bb",
+                      "username": "borhany",
+                      "email": "borhany@gmail.com",
+                      "password": "$2b$10$fcO71VTdLEmjFsQ5Ob4cWOl2Lfh7bfhcINk2fMVm5R4jUW5rxa4ya",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-14T07:49:51.321Z",
+                      "updatedAt": "2026-07-14T07:49:51.321Z",
+                      "__v": 0
+                    },
+                    "creator": {
+                      "_id": "6a555bcb8f335553c20e4522",
+                      "username": "totos",
+                      "email": "totos@gmail.com",
+                      "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T21:33:34.697Z",
+                      "updatedAt": "2026-07-13T21:33:34.697Z",
+                      "__v": 0
+                    },
+                    "dueDate": null,
+                    "labels": [],
+                    "attachments": [],
+                    "comments": [],
+                    "order": 0,
+                    "checklist": [],
+                    "createdAt": "2026-07-14T09:24:32.449Z",
+                    "updatedAt": "2026-07-14T09:41:52.172Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/": {
+      "get": {
+        "summary": "get all my tasks",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Tasks retrieved successfully",
+                  "data": [
+                    {
+                      "_id": "6a560050be93c07ce4e375a2",
+                      "project": "6a555be78f335553c20e4525",
+                      "title": "solve 2sum",
+                      "description": "here is the link for the problem : https://leetcode.com/problems/two-sum/description/",
+                      "status": "TODO",
+                      "priority": "MEDIUM",
+                      "assignee": "6a55eaf2f28089e84b1880bb",
+                      "creator": "6a555bcb8f335553c20e4522",
+                      "dueDate": null,
+                      "labels": [],
+                      "attachments": [],
+                      "comments": [],
+                      "order": 0,
+                      "checklist": [],
+                      "createdAt": "2026-07-14T09:24:32.449Z",
+                      "updatedAt": "2026-07-15T11:14:47.852Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/projects/6a5559c78f335553c20e4517/tasks/": {
+      "get": {
+        "summary": "get tasks by project ids",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Tasks retrieved successfully",
+                  "data": [
+                    {
+                      "_id": "6a5e0b39898bef0d40bc4706",
+                      "project": "6a5559c78f335553c20e4517",
+                      "title": "finish the front-end",
+                      "description": "make the angular front end for nti project managment project please",
+                      "status": "TODO",
+                      "priority": "MEDIUM",
+                      "assignee": {
+                        "_id": "6a54c20ad0606efc4bfbe73c",
+                        "username": "admin123",
+                        "email": "admin@gmail.com",
+                        "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                        "avatar": "photo",
+                        "role": "admin",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T10:46:28.343Z",
+                        "updatedAt": "2026-07-13T21:14:32.311Z",
+                        "__v": 0
+                      },
+                      "creator": {
+                        "_id": "6a54c20ad0606efc4bfbe73c",
+                        "username": "admin123",
+                        "email": "admin@gmail.com",
+                        "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                        "avatar": "photo",
+                        "role": "admin",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T10:46:28.343Z",
+                        "updatedAt": "2026-07-13T21:14:32.311Z",
+                        "__v": 0
+                      },
+                      "dueDate": null,
+                      "labels": [],
+                      "attachments": [],
+                      "comments": [],
+                      "order": 1,
+                      "checklist": [],
+                      "createdAt": "2026-07-20T11:49:13.451Z",
+                      "updatedAt": "2026-07-20T11:49:13.451Z"
+                    },
+                    {
+                      "_id": "6a5e0b28898bef0d40bc46fe",
+                      "project": "6a5559c78f335553c20e4517",
+                      "title": "finish the front-end",
+                      "description": "make the angular front end for nti project managment project please",
+                      "status": "TODO",
+                      "priority": "MEDIUM",
+                      "assignee": null,
+                      "creator": {
+                        "_id": "6a54c20ad0606efc4bfbe73c",
+                        "username": "admin123",
+                        "email": "admin@gmail.com",
+                        "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                        "avatar": "photo",
+                        "role": "admin",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T10:46:28.343Z",
+                        "updatedAt": "2026-07-13T21:14:32.311Z",
+                        "__v": 0
+                      },
+                      "dueDate": null,
+                      "labels": [],
+                      "attachments": [],
+                      "comments": [],
+                      "order": 0,
+                      "checklist": [],
+                      "createdAt": "2026-07-20T11:48:56.680Z",
+                      "updatedAt": "2026-07-20T11:48:56.680Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/6a5e0b39898bef0d40bc4706": {
+      "patch": {
+        "summary": "update task",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "dueDate": "2027-07-21T00:00:00.000Z"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Task updated successfully",
+                  "data": {
+                    "_id": "6a5e0b39898bef0d40bc4706",
+                    "project": {
+                      "_id": "6a5559c78f335553c20e4517",
+                      "name": "NTI project",
+                      "description": "this project for the nti project in summer 2026",
+                      "owner": "6a54c20ad0606efc4bfbe73c",
+                      "members": [
+                        {
+                          "user": "6a54c20ad0606efc4bfbe73c",
+                          "role": "OWNER",
+                          "joinedAt": "2026-07-13T21:33:59.313Z"
+                        }
+                      ],
+                      "status": "Active",
+                      "visibility": "Private",
+                      "color": "#4f46e5",
+                      "createdAt": "2026-07-13T21:33:59.317Z",
+                      "updatedAt": "2026-07-20T11:36:08.294Z",
+                      "__v": 2
+                    },
+                    "title": "finish the front-end",
+                    "description": "make the angular front end for nti project managment project please",
+                    "status": "TODO",
+                    "priority": "MEDIUM",
+                    "assignee": {
+                      "_id": "6a54c20ad0606efc4bfbe73c",
+                      "username": "admin123",
+                      "email": "admin@gmail.com",
+                      "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                      "avatar": "photo",
+                      "role": "admin",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T10:46:28.343Z",
+                      "updatedAt": "2026-07-13T21:14:32.311Z",
+                      "__v": 0
+                    },
+                    "creator": {
+                      "_id": "6a54c20ad0606efc4bfbe73c",
+                      "username": "admin123",
+                      "email": "admin@gmail.com",
+                      "password": "$2b$10$kjRuxrPqSN1uYqK4tX3Ybey7nU3U.imcVKZNsLhBMbfozK.9QfBUy",
+                      "avatar": "photo",
+                      "role": "admin",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T10:46:28.343Z",
+                      "updatedAt": "2026-07-13T21:14:32.311Z",
+                      "__v": 0
+                    },
+                    "dueDate": "2027-07-21T00:00:00.000Z",
+                    "labels": [],
+                    "attachments": [],
+                    "comments": [],
+                    "order": 1,
+                    "checklist": [],
+                    "createdAt": "2026-07-20T11:49:13.451Z",
+                    "updatedAt": "2026-07-20T12:00:44.223Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/6a560050be93c07ce4e375a2/comments": {
+      "post": {
+        "summary": "create comment",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "content": "this is pretty easy problem 3sum is much harder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Comment created successfully",
+                  "data": {
+                    "task": "6a560050be93c07ce4e375a2",
+                    "author": {
+                      "_id": "6a555bcb8f335553c20e4522",
+                      "username": "totos",
+                      "email": "totos@gmail.com",
+                      "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                      "avatar": "",
+                      "role": "user",
+                      "isVerified": false,
+                      "isActive": true,
+                      "isOnline": false,
+                      "lastSeen": null,
+                      "createdAt": "2026-07-13T21:33:34.697Z",
+                      "updatedAt": "2026-07-13T21:33:34.697Z",
+                      "__v": 0
+                    },
+                    "content": "this is pretty easy problem 3sum is much harder",
+                    "edited": false,
+                    "editedAt": null,
+                    "_id": "6a561c1b0377169c11e5b04c",
+                    "createdAt": "2026-07-14T11:23:07.313Z",
+                    "updatedAt": "2026-07-14T11:23:07.313Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "get comments",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Comments retrieved successfully",
+                  "data": [
+                    {
+                      "_id": "6a561c1b0377169c11e5b04c",
+                      "task": "6a560050be93c07ce4e375a2",
+                      "author": {
+                        "_id": "6a555bcb8f335553c20e4522",
+                        "username": "totos",
+                        "email": "totos@gmail.com",
+                        "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                        "avatar": "",
+                        "role": "user",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T21:33:34.697Z",
+                        "updatedAt": "2026-07-13T21:33:34.697Z",
+                        "__v": 0
+                      },
+                      "content": "this is pretty easy problem 3sum is much harder",
+                      "edited": false,
+                      "editedAt": null,
+                      "createdAt": "2026-07-14T11:23:07.313Z",
+                      "updatedAt": "2026-07-14T11:23:07.313Z",
+                      "__v": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/comments/6a561c1b0377169c11e5b04c": {
+      "patch": {
+        "summary": "update comment",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "content": "ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh i get it now"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": false,
+                  "message": "not your comment",
+                  "errors": {
+                    "name": "Error",
+                    "errors": null,
+                    "stack": "Error: not your comment\n    at updateCommentService (file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/services/comments.service.js:42:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/controllers/comments.controller.js:20:19"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/comments/6a562216203690710778914e": {
+      "delete": {
+        "summary": "delete comment",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal server error",
+                  "errors": {
+                    "name": "TypeError",
+                    "message": "Cannot read properties of null (reading 'author')",
+                    "stack": "TypeError: Cannot read properties of null (reading 'author')\n    at deleteCommentService (file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/services/comments.service.js:63:34)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///home/totos_aboelshuur/nti/NTI-FinalProject/src/controllers/comments.controller.js:25:3"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/6a560050be93c07ce4e375a2/attachments": {
+      "post": {
+        "summary": "create attachment for task",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "format": "binary",
+                    "type": "string",
+                    "example": "file:///home/totos_aboelshuur/Downloads/Angular task ahmed abdelrahman.pdf"
+                  }
+                }
+              },
+              "example": {
+                "file": "file:///home/totos_aboelshuur/Downloads/Angular task ahmed abdelrahman.pdf"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "1": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "2": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "3": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "4": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "5": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "6": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "7": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "8": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "9": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "10": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "11": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  },
+                  "12": {
+                    "summary": "Created",
+                    "value": {
+                      "success": true,
+                      "message": "Attachment stored successfully",
+                      "data": {
+                        "uploadedBy": {
+                          "_id": "6a555bcb8f335553c20e4522",
+                          "username": "totos",
+                          "email": "totos@gmail.com",
+                          "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                          "avatar": "",
+                          "role": "user",
+                          "isVerified": false,
+                          "isActive": true,
+                          "isOnline": false,
+                          "lastSeen": null,
+                          "createdAt": "2026-07-13T21:33:34.697Z",
+                          "updatedAt": "2026-07-13T21:33:34.697Z",
+                          "__v": 0
+                        },
+                        "project": "6a555be78f335553c20e4525",
+                        "task": "6a560050be93c07ce4e375a2",
+                        "fileName": "Angular task ahmed abdelrahman.pdf",
+                        "originalName": "Angular task ahmed abdelrahman.pdf",
+                        "publicId": "6a575d665c7cd75eb854e51d",
+                        "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                        "mimeType": "application/pdf",
+                        "size": 290121,
+                        "_id": "6a575d6896f612bc683ef24d",
+                        "createdAt": "2026-07-15T10:14:00.197Z",
+                        "updatedAt": "2026-07-15T10:14:00.197Z",
+                        "__v": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "get attachments of task",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Attachments retrieved successfully",
+                  "data": [
+                    {
+                      "_id": "6a575d3396f612bc683ef246",
+                      "uploadedBy": {
+                        "_id": "6a555bcb8f335553c20e4522",
+                        "username": "totos",
+                        "email": "totos@gmail.com",
+                        "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                        "avatar": "",
+                        "role": "user",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T21:33:34.697Z",
+                        "updatedAt": "2026-07-13T21:33:34.697Z",
+                        "__v": 0
+                      },
+                      "project": "6a555be78f335553c20e4525",
+                      "task": "6a560050be93c07ce4e375a2",
+                      "fileName": "Angular task ahmed abdelrahman.pdf",
+                      "originalName": "Angular task ahmed abdelrahman.pdf",
+                      "publicId": "6a575d315c7cd75eb853e967",
+                      "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_OzekF6qgd.pdf",
+                      "mimeType": "application/pdf",
+                      "size": 290121,
+                      "createdAt": "2026-07-15T10:13:07.465Z",
+                      "updatedAt": "2026-07-15T10:13:07.465Z",
+                      "__v": 0
+                    },
+                    {
+                      "_id": "6a575d6896f612bc683ef24d",
+                      "uploadedBy": {
+                        "_id": "6a555bcb8f335553c20e4522",
+                        "username": "totos",
+                        "email": "totos@gmail.com",
+                        "password": "$2b$10$J26vqlEqcS0OnPpqUiTtZucf0BaRzoZsV.ySSshtTuS9QIJ0ZqTZO",
+                        "avatar": "",
+                        "role": "user",
+                        "isVerified": false,
+                        "isActive": true,
+                        "isOnline": false,
+                        "lastSeen": null,
+                        "createdAt": "2026-07-13T21:33:34.697Z",
+                        "updatedAt": "2026-07-13T21:33:34.697Z",
+                        "__v": 0
+                      },
+                      "project": "6a555be78f335553c20e4525",
+                      "task": "6a560050be93c07ce4e375a2",
+                      "fileName": "Angular task ahmed abdelrahman.pdf",
+                      "originalName": "Angular task ahmed abdelrahman.pdf",
+                      "publicId": "6a575d665c7cd75eb854e51d",
+                      "url": "https://ik.imagekit.io/zvzqmrfik/nti-project/Angular_task_ahmed_abdelrahman_CenZPPA1Z.pdf",
+                      "mimeType": "application/pdf",
+                      "size": 290121,
+                      "createdAt": "2026-07-15T10:14:00.197Z",
+                      "updatedAt": "2026-07-15T10:14:00.197Z",
+                      "__v": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/tasks/6a560050be93c07ce4e375a2/attachments/6a575d6896f612bc683ef24d": {
+      "delete": {
+        "summary": "delete attachment",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Attachment deleted successfully",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/notifications/": {
+      "get": {
+        "summary": "see my notifications",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "Notifications retrieved successfully",
+                  "data": [
+                    {
+                      "_id": "6a56046044fed4f938e8cc2c",
+                      "receiver": "6a55eaf2f28089e84b1880bb",
+                      "sender": "6a555bcb8f335553c20e4522",
+                      "type": "task",
+                      "title": "Task assigned",
+                      "message": "You have been assigned to \"solve 2sum\" in project \"leetcode project\".",
+                      "read": false,
+                      "metadata": {
+                        "projectId": "6a555be78f335553c20e4525",
+                        "taskId": "6a560050be93c07ce4e375a2",
+                        "projectName": "leetcode project"
+                      },
+                      "createdAt": "2026-07-14T09:41:52.417Z",
+                      "updatedAt": "2026-07-14T09:41:52.417Z"
+                    },
+                    {
+                      "_id": "6a55f14351d6015d116ee9cd",
+                      "receiver": "6a55eaf2f28089e84b1880bb",
+                      "sender": "6a555bcb8f335553c20e4522",
+                      "type": "invitation",
+                      "title": "Project invitation",
+                      "message": "You have been invited to join the project \"leetcode project\".",
+                      "read": false,
+                      "metadata": {
+                        "projectId": "6a555be78f335553c20e4525",
+                        "projectName": "leetcode project",
+                        "invitationId": "6a55f14351d6015d116ee9cb"
+                      },
+                      "createdAt": "2026-07-14T08:20:19.860Z",
+                      "updatedAt": "2026-07-14T08:20:19.860Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "api health",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "success": true,
+                  "message": "API is healthy",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}

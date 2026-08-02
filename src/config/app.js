@@ -24,6 +24,14 @@ import rateLimit from 'express-rate-limit';
 import { xss } from "express-xss-sanitizer";
 import hpp from "hpp";
 const app = express();
+import swaggerUi from "swagger-ui-express";
+
+import swaggerDocument from "../docs/apidog backend documentation.json" with { type: "json" };
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 import { AppError } from '../utils/AppError.js';
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 

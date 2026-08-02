@@ -4,6 +4,7 @@ import { connectDatabase, disconnectDatabase } from './db.js';
 import { logger } from '../utils/logger.js';
 import  redis  from "../config/redisSetup.js";
 
+
 const startServer = async () => {
   try {
     await connectDatabase();
