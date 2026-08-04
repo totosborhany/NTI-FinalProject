@@ -17,6 +17,6 @@ export const createAttachment = catchAsync(async (req, res, next) => {
 });
 
 export const deleteAttachment = catchAsync(async (req, res, next) => {
-  await deleteAttachmentService(req.params.attachmentId);
+  await deleteAttachmentService(req.uer.id,req.params.attachmentId);
   return res.status(200).json(ApiResponse.success('Attachment deleted successfully', null));
 });

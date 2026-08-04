@@ -296,10 +296,31 @@ export const getAllMembersService = async (projectId) => {
   // Now that the project is populated, you can safely return the members
   return project.members;
 };
-export const getAllActivitesService = async (projectId) => {
+export const getAllActivitesService = async (query,projectId) => {
 try{
-  const activity = await ActivityLog.find({ project: projectId }).sort({ createdAt: -1 });
-  return activity;
+const page  = new Pagination(
+  ActivityLog.find({ project: projectId }).sort({ createdAt: -1 })
+  ,{page:1,limit:10}).filter().limitFields().sort().paginate();
+
+const activity = await page.query.lean();
+  const totalItems = activity.length;
+  const pageNumber = query.page || 1;
+  const limit = query.limit || 10;
+
+  const meta = {
+    page: pageNumber,
+    limit,
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    hasNextPage: pageNumber < Math.ceil(totalItems / limit),
+    hasPreviousPage: pageNumber > 1,
+  };
+
+  const summary = {
+    actitivycount: totalItems,
+  };
+return { data: activity, meta, summary };
+
  
 }catch(err){
       throw new AppError(404, "couldnt find project");

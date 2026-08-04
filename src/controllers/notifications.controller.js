@@ -16,9 +16,9 @@ return next(new AppError(404,"sorry couldnt find notificaions"))
   markAsRead: catchAsync(async (req, res) => {
     const notification = await notificationsService.markAllAsRead(req.user.id);
 
-    if (!notification) {
-      return res.status(404).json(ApiResponse.fail('Notification not found'));
-    }
+    // if (!notification) {
+    //   return res.status(404).json(ApiResponse.fail('Notification not found'));
+    // }
 
     return res.status(200).json(ApiResponse.success('Notification marked as read', notification));
   }),

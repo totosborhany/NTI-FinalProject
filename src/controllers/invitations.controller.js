@@ -43,9 +43,9 @@ export const deleteInvitation = catchAsync(async (req, res, next) => {
 export const myInvitations = catchAsync(async (req, res,next) => {
   const userId = req.user.id;
   const result = await getMyInvitations(userId,req.query);
-  if(result.data.length === 0){
-return res.status(200).json(ApiResponse.success('No invitations found',result.data,result.meta,result.summary));
-  }
+//   if(result.data.length === 0){
+// return res.status(200).json(ApiResponse.success('No invitations found',result.data,result.meta,result.summary));
+//   }
    res.status(200).json(
     ApiResponse.success('Invitations retrieved successfully',result.data,result.meta,result.summary)
   );

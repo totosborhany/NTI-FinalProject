@@ -62,7 +62,7 @@ return next(new AppError(400,"Sorry no members"));
 });
 
 export const projectActivity = catchAsync(async (req,res,next)=>{
-  const activity = await getAllActivitesService(req.params.projectId);
+  const activity = await getAllActivitesService(req.query,req.params.projectId);
   if(!activity){
 return next(new AppError(400,"Sorry no activities"));
   }

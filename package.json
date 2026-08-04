@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/totosborhany/NTI-FinalProject#readme",
   "dependencies": {
+    "@lucide/angular": "^1.28.0",
+    "@tailwindcss/postcss": "^4.3.3",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.10.0",
     "compression": "^1.8.1",
@@ -40,12 +42,14 @@
     "morgan": "^1.11.0",
     "ms": "^2.1.3",
     "multer": "^2.2.0",
+    "ngx-toastr": "^20.0.5",
     "nodemailer": "^9.0.3",
     "nodemon": "^3.1.14",
     "redis": "^6.1.0",
     "streamifier": "^0.1.1",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
+    "tailwindcss": "^4.3.3",
     "xss": "^1.0.15",
     "zod": "^4.4.3"
   },

@@ -5,15 +5,15 @@ import { Comment } from '../models/comments.js';
 import { Attachment } from '../models/attachments.js';
 import { AppError } from '../utils/AppError.js';
 import { notificationsService } from './notifications.service.js';
-import {Pagination} from "../utils/pagination.js";
-import {imagekit} from "../config/cloudinary.js";
+import { Pagination } from "../utils/pagination.js";
+import { imagekit } from "../config/cloudinary.js";
 import { ActivityLog } from '../models/logs.js';
 import redis from "../config/redisSetup.js";
+
 const populateTask = async (task) => {
-  await task.populate([{ path: 'creator' }, { path: 'assignee' },{path:"attachments"},{path:"comments"}]);
+  await task.populate([{ path: 'creator' }, { path: 'assignee' }, { path: "attachments" }, { path: "comments" }]);
   return task;
 };
-
 
 const normalizeLabels = (labels) => {
   if (!Array.isArray(labels)) {
@@ -25,72 +25,118 @@ const normalizeLabels = (labels) => {
     .filter((label) => label.length > 0);
 };
 
-export const getMyTaskService = async (query,userId)=>{
+export const getMyTaskService = async (query, userId) => {
+  const page = new Pagination(
+    Task.find({
+      $or: [
+        { creator: userId },    // Condition 1: You created/own the task
+        { assignee: userId }    // Condition 2: You are assigned to the task
+      ]
+    }).populate([
+  { path: "creator" },
+  { path: "assignee" },
+  {
+    path: "attachments",
+    populate: {
+      path: "uploadedBy",
+      select: "username avatar email",
+    },
+  },
+  {
+    path: "comments",
+    populate: {
+      path: "author",
+      select: "username avatar email",
+    },
+  },
+]) ,// <-- Populated directly in the query
+    query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-const page = new Pagination(
-  Task.find({
-    $or: [
-      { creator: userId },       // Condition 1: You created/own the task
-      { assignee: userId }    // Condition 2: You are assigned to the task
-    ]
-  }),
-  query
-)
-  .filter()
-  .sort()
-  .limitFields()
-  .paginate();
+  // 3. Execute the query
+  const tasks = await page.query.lean();
+  
+  const totalItems = tasks.length;
+  const pageNumber = query.page || 1;
+  const limit = query.limit || 10;
 
-// 3. Execute the query
-const tasks = await page.query.lean();
+  const meta = {
+    page: pageNumber,
+    limit,
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    hasNextPage: pageNumber < Math.ceil(totalItems / limit),
+    hasPreviousPage: pageNumber > 1,
+  };
 
-return await Promise.all(tasks.map(populateTask));
+  const summary = {
+    taskCount: totalItems,
+  };
+  // Return the tasks directly since they are already populated and lean
+  return { data: tasks, meta, summary };
 }
-export const getTasksByProjectService = async (query,projectId) => {
-  const project = await Project.findById(projectId);
 
+export const getTasksByProjectService = async (query, projectId) => {
+  const project = await Project.findById(projectId);
 
   if (!project) {
     throw new AppError(404, 'project not found');
   }
 
-  
- const page = new Pagination(
- Task.find({ project: projectId }).populate([{ path: 'creator' }, { path: 'assignee' }]),
-  query
-)
-  .filter()
-  .sort()
-  .limitFields()
-  .paginate();
+  const page = new Pagination(
+    Task.find({ project: projectId }).populate([
+  { path: "creator" },
+  { path: "assignee" },
+  {
+    path: "attachments",
+    populate: {
+      path: "uploadedBy",
+      select: "username avatar email",
+    },
+  },
+  {
+    path: "comments",
+    populate: {
+      path: "author",
+      select: "username avatar email",
+    },
+  },
+]), // <-- Added attachments and comments to the query population
+    query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-
-
-const tasks = await page.query.lean();
-const populatedTasks= await Promise.all(tasks.map(populateTask))
+  const tasks = await page.query.lean();
 
   const meta = {
-    page:query.page || 1,
-    limit:query.limit || 10,
-    totalItems:populatedTasks.length,
-    totalPages: Math.ceil(populatedTasks.length / query.limit),
-    hasNextPage: query.page <Math.ceil(populatedTasks.length / query.limit),
-  hasPreviousPage: query.page > 1,
+    page: query.page || 1,
+    limit: query.limit || 10,
+    totalItems: tasks.length,
+    totalPages: Math.ceil(tasks.length / query.limit),
+    hasNextPage: query.page < Math.ceil(tasks.length / query.limit),
+    hasPreviousPage: query.page > 1,
   };
 
   const summary = {
-    taskCount: populatedTasks.length,
+    taskCount: tasks.length,
   };
 
-return {
-  data:populatedTasks,
-  meta,
-  summary
-};
+  return {
+    data: tasks, // Return tasks directly
+    meta,
+    summary
+  };
 };
 
 export const createTaskService = async (projectId, data, userId) => {
-    await redis.del(`user:${userId}:profile`);
+  await redis.del(`user:${userId}:profile`);
 
   const project = await Project.findById(projectId);
   if (!project) {
@@ -112,8 +158,7 @@ export const createTaskService = async (projectId, data, userId) => {
     if (!isMember) {
       throw new AppError(404, 'sorry he isn\'t a member invite him first');
     }
-        await redis.del(`user:${data.assignee}:profile`);
-
+    await redis.del(`user:${data.assignee}:profile`);
   }
 
   const validStatuses = ['TODO', 'IN_PROGRESS', 'DONE'];
@@ -188,13 +233,13 @@ export const updateTaskService = async (taskId, data) => {
   }
 
   const previousAssigneeId = task.assignee ? task.assignee.toString() : null;
-  const previousStatus = task.status; 
+  const previousStatus = task.status;
 
   if (data.assignee !== undefined) {
     let assignee = null;
 
     if (data.assignee !== null) {
-      assignee = await User.findOne({email:data.assignee});
+      assignee = await User.findOne({ email: data.assignee });
       if (!assignee) {
         throw new AppError(404, 'assignee not found');
       }
@@ -209,9 +254,8 @@ export const updateTaskService = async (taskId, data) => {
     }
     console.log(task.assignee);
     task.assignee = assignee ? assignee._id : null;
-        await redis.del(`user:${task.creator}:profile`);
+    await redis.del(`user:${task.creator}:profile`);
     await redis.del(`user:${task.assignee}:profile`);
-
   }
 
   const validStatuses = ['TODO', 'IN_PROGRESS', 'DONE'];
@@ -222,7 +266,6 @@ export const updateTaskService = async (taskId, data) => {
       throw new AppError(400, 'invalid task status');
     }
     task.status = data.status;
-
   }
 
   if (data.priority !== undefined) {
@@ -249,17 +292,17 @@ export const updateTaskService = async (taskId, data) => {
   }
 
   await task.save();
-if(task.status !== previousStatus){
-await ActivityLog.create({
-    project: task.project._id,
-    actor: task.creator,
-    type: 'TASK_STATUS_CHANGED',
-    entityType: 'Task',
-    entityId: task._id,
-    message: `Task "${task.title}" ${previousStatus} -> ${task.status} by ${task.creator}`,
-  });
-  
-}
+  if (task.status !== previousStatus) {
+    await ActivityLog.create({
+      project: task.project._id,
+      actor: task.creator,
+      type: 'TASK_STATUS_CHANGED',
+      entityType: 'Task',
+      entityId: task._id,
+      message: `Task "${task.title}" ${previousStatus} -> ${task.status} by ${task.creator}`,
+    });
+  }
+
   const shouldNotifyForAssignment = Boolean(
     task.assignee && previousAssigneeId !== task.assignee.toString()
   );
@@ -278,7 +321,7 @@ await ActivityLog.create({
       },
     });
   }
-  
+
   await ActivityLog.create({
     project: task.project._id,
     actor: task.creator,
@@ -297,12 +340,11 @@ export const deleteTaskService = async (taskId) => {
   }
 
   const attachments = await Attachment.find({ task: taskId });
-  
-  for (const attachment of attachments) {
-      await imagekit.deleteFile(attachment.publicId);
-  
-  }  
 
-Promise.all([  redis.del(`user:${task.creator}:profile`),Attachment.deleteMany({ task: taskId }), Comment.deleteMany({ task: taskId }), Task.findByIdAndDelete(taskId)]);
+  for (const attachment of attachments) {
+    await imagekit.deleteFile(attachment.publicId);
+  }
+
+  Promise.all([redis.del(`user:${task.creator}:profile`), Attachment.deleteMany({ task: taskId }), Comment.deleteMany({ task: taskId }), Task.findByIdAndDelete(taskId)]);
   return task;
 };

@@ -69,34 +69,48 @@ export const createAttachmentService = async (taskId, file, userId) => {
 
   return await populateAttachment(attachment);
 };
-export const deleteAttachmentService = async (attachmentId) => {
+export const deleteAttachmentService = async (
+  userId,
+  userRole,
+  attachmentId
+) => {
   const attachment = await Attachment.findById(attachmentId);
 
   if (!attachment) {
-    throw new AppError(404, 'attachment not found');
+    throw new AppError(404, "Attachment not found");
   }
 
+  // Members can only delete their own attachments
+  if (
+    userRole === "MEMBER" &&
+    attachment.uploadedBy.toString() !== userId.toString()
+  ) {
+    throw new AppError(
+      403,
+      "You are not allowed to delete another member's attachment."
+    );
+  }
 
-  await Promise.all([imagekit.deleteFile(attachment.publicId),
+  await Promise.all([
+    imagekit.deleteFile(attachment.publicId),
 
-Task.findByIdAndUpdate(
-    attachment.task,
-    {
+    Task.findByIdAndUpdate(attachment.task, {
       $pull: {
         attachments: attachment._id,
       },
-    }
-  ),
-  attachment.deleteOne(),
-ActivityLog.create({
-    project: attachment.project,
-    actor: attachment.uploadedBy,
-    type: "ATTACHMENT_DELETED",
-    entityType: "Attachment",
-    entityId: attachment._id,
-    message: `Attachment ${attachment.originalName} was deleted from task ${attachment.task}.`,
-  })
-]);
+    }),
+
+    ActivityLog.create({
+      project: attachment.project,
+      actor: userId,
+      type: "ATTACHMENT_DELETED",
+      entityType: "Attachment",
+      entityId: attachment._id,
+      message: `Attachment ${attachment.originalName} was deleted.`,
+    }),
+
+    attachment.deleteOne(),
+  ]);
 
   return attachment;
 };

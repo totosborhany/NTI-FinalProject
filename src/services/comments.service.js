@@ -16,7 +16,7 @@ export const getCommentsByTaskService = async (taskId) => {
     throw new AppError(404, 'task not found');
   }
 
-  return await Comment.find({ task: taskId }).populate('author');
+  return await Comment.find({ task: taskId }).populate('author').lean();
 };
 
 export const createCommentService = async (taskId, data, userId,file) => {

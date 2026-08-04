@@ -8,15 +8,15 @@ export const getAllTasks  =catchAsync(async (req,res,next)=>{
   if(!result.data || result.data.length === 0){
     return next(new AppError(404, 'No tasks found for this project'));
   }
-    return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', result.data,result.meta,result.summary));
+    return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', result.data, result.meta, result.summary));
 
 });
 export const getTasksByProject = catchAsync(async (req, res, next) => {
-  const tasks = await getTasksByProjectService(req.query,req.params.projectId);
-  if (!tasks) {
+  const result = await getTasksByProjectService(req.query,req.params.projectId);
+  if (!result.data || result.data.length === 0) {
     return next(new AppError(404, 'No tasks found for this project'));
   }
-  return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', tasks));
+  return res.status(200).json(ApiResponse.success('Tasks retrieved successfully', result.data, result.meta, result.summary));
 });
 
 export const createTask = catchAsync(async (req, res, next) => {
